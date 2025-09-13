@@ -47,7 +47,7 @@ const Alerts = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full overflow-x-hidden">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Alerts & Notifications</h2>
         <div className="flex items-center space-x-4 mt-4 md:mt-0">
@@ -57,7 +57,7 @@ const Alerts = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-x-auto">
         {/* High Priority Alerts */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
@@ -102,7 +102,7 @@ const Alerts = () => {
       </div>
 
       {/* Alert List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">Recent Alerts</h3>
         </div>

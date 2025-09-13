@@ -17,9 +17,9 @@ const Overview = ({ onViewStudent }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full overflow-x-hidden">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto">
         <StatsCard
           title="Total Students"
           value={dashboardStats.totalStudents.toString()}
@@ -54,9 +54,13 @@ const Overview = ({ onViewStudent }) => {
         />
       </div>
       {/* Chart */}
-      <AttendanceChart data={chartData} />
+      <div className="overflow-x-auto">
+        <AttendanceChart data={chartData} />
+      </div>
       {/* Risk Table */}
-      <RiskTable students={mockStudents} onViewStudent={onViewStudent} />
+      <div className="overflow-x-auto">
+        <RiskTable students={mockStudents} onViewStudent={onViewStudent} />
+      </div>
     </div>
   );
 };

@@ -58,11 +58,11 @@ const StudentDetail = ({ student, onBack }) => {
     return suggestions;
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full overflow-x-hidden">
       <button onClick={onBack} className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to List
       </button>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -78,7 +78,7 @@ const StudentDetail = ({ student, onBack }) => {
         </div>
       </div>
       {/* Attendance Chart */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Attendance History</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -93,7 +93,7 @@ const StudentDetail = ({ student, onBack }) => {
         </div>
       </div>
       {/* Score Chart */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Test Score History</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -109,7 +109,7 @@ const StudentDetail = ({ student, onBack }) => {
       </div>
       {/* Risk Factors */}
       {getRiskFactors().length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Risk Factors</h3>
           <ul className="space-y-2">
             {getRiskFactors().map((factor, idx) => (
@@ -124,7 +124,7 @@ const StudentDetail = ({ student, onBack }) => {
       )}
       {/* Suggested Actions */}
       {getSuggestions().length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Suggested Mentor Actions</h3>
           <ul className="space-y-2">
             {getSuggestions().map((suggestion, idx) => (
