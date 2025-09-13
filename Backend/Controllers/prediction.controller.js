@@ -1,7 +1,7 @@
 
 import { PredictionResult } from '../Models/PredictionResult.js';
 import { getCurrentBiweeklyPeriod } from '../cron/biweeklyPrediction.js';
-const University = require('../models/university.model');
+import { University } from '../Models/UniversitySchema.js';
 
 
 // Normal prediction route with biweekly caching
