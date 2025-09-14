@@ -1,6 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: 'Inter';
+  src: url("../src/assets/fonts/InterDisplay-Regular.ttf") format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme{
+    --font-inter: Inter, "sans-serif";
+}
+
 @custom-variant dark (&:is(.dark *));
 
 .no-visible-scrollbar {
@@ -122,9 +134,29 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 font-['Inter'];
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-['Inter'];
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@theme inline {
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1
+    var(--delay, 0ms);
+
+  @keyframes cell-ripple {
+    0% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.4;
+    }
+  }
+}
+

@@ -4,11 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import Signup from './pages/Auth/Signup.jsx'
+import Login from './pages/Auth/Login.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='' element={<Home/>} />
+      <Route path='/auth/signup' element={<Signup/>} />
+      <Route path='/auth/login' element={<Login/>} />
     </Route>
   )
 )

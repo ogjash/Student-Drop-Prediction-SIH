@@ -27,12 +27,12 @@ export const Tabs = ({
     <>
       <div
         className={cn(
-          "w-full",
+          "flex items-center justify-center w-full",
           containerClassName
         )}
       >
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex mb-8 -mt-px relative">
+        <div className="px-2 md:px-4">
+          <div className="grid grid-cols-2 sm:flex mb-4 md:mb-8 -mt-px relative gap-1 md:gap-0">
             {propTabs.map((tab, idx) => (
               <button
                 key={tab.title}
@@ -40,9 +40,11 @@ export const Tabs = ({
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
                 className={cn(
-                  "flex-1 py-5 px-7 border-t border-b border-r border-l border-[#d6d9e4] bg-white text-[#505967] transition",
+                  "py-3 md:py-5 px-5 md:px-10 border border-[#d6d9e4] bg-white text-[#505967] hover:text-black transition text-sm md:text-base",
+                  "md:flex-1",
+                  idx === 4 && "col-span-2 justify-self-center w-1/2", // Center the 5th item in mobile
                   active.value === tab.value
-                    ? "bg-gray-200" // highlight active
+                    ? "bg-gray-200 text-black"
                     : "",
                   tabClassName
                 )}
@@ -72,7 +74,7 @@ export const Tabs = ({
         active={active}
         key={active.value}
         hovering={hovering}
-        className={cn("mt-10", contentClassName)}
+        className={cn("mt-6 md:mt-10 px-0", contentClassName)}
       />
     </>
   );
@@ -84,7 +86,7 @@ export const FadeInDiv = ({ className, tabs, hovering }) => {
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-auto mx-10 h-full">
       {tabs.map((tab, idx) => (
         <motion.div
           key={tab.value}
@@ -98,7 +100,11 @@ export const FadeInDiv = ({ className, tabs, hovering }) => {
           animate={{
             y: isActive(tab) ? [0, 40, 0] : 0,
           }}
-          className={cn("w-full h-full absolute top-0 left-0", className)}
+          className={cn(
+            "w-full h-full absolute top-0 left-0",
+            "transform-gpu",
+            className
+          )}
         >
           {tab.content}
         </motion.div>

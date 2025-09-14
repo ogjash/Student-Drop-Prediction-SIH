@@ -1,16 +1,19 @@
 import React from 'react'
 import Footer from './components/Footer.jsx'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
-
+import {ReactLenis} from './lib/lenis.js'
 
 const App = () => {
+  const { pathname } = useLocation()
+  const isAuthPage = pathname.includes('/auth/')
+
   return (
-    <>
-      <Navbar />
+    <ReactLenis root>
+      {!isAuthPage && <Navbar />}
       <Outlet />
-      <Footer />
-    </>
+      {!isAuthPage && <Footer />}
+    </ReactLenis>
   )
 }
 
