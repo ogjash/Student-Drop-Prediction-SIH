@@ -7,12 +7,13 @@ import {ReactLenis} from './lib/lenis.js'
 const App = () => {
   const { pathname } = useLocation()
   const isAuthPage = pathname.includes('/auth/')
+  const isDashboard = pathname.includes('/dashboard')
 
   return (
     <ReactLenis root>
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && !isDashboard && <Navbar />}
       <Outlet />
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isDashboard && <Footer />}
     </ReactLenis>
   )
 }

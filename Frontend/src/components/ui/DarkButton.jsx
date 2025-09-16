@@ -1,8 +1,11 @@
 import React from 'react'
 
-const DarkButton = ({ text, onClick }) => {
+const DarkButton = ({ text, onClick, className = '' }) => {
   return (
-    <button onClick={onClick} className="border border-[#505967] bg-[#1c1d1f] text-[#ffff] px-7 py-1 rounded-lg font-semibold hover:bg-gradient-to-b from-[#505967] to-[#1c1d1f] transition">
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-[#1c1d1f] hover:bg-[#000] rounded-lg transition-colors ${className}`}
+    >
       {text}
     </button>
   )

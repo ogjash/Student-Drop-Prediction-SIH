@@ -24,6 +24,13 @@ const Signup = () => {
     }))
   }
 
+  const handleSignup = (e) => {
+    e.preventDefault()
+    // Add your signup logic here
+    // For now, just redirect to dashboard
+    navigate('/dashboard')
+  }
+
   return (
     <div className="min-h-screen bg-white p-4 relative flex items-center justify-center overflow-hidden">
       <BackgroundRippleEffect className="!opacity-[0.1]" />
@@ -134,10 +141,7 @@ const Signup = () => {
               <DarkButton
                 text="Sign Up"
                 className="w-full justify-center"
-                onClick={(e) => {
-                  e.preventDefault()
-                  // Add your signup logic here
-                }}
+                onClick={handleSignup}
               />
             </form>
           </CardContent>
