@@ -35,7 +35,7 @@ const Reports = () => {
   };
 
   return (
-    <div className="space-y-6 w-full overflow-x-hidden">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
         <div className="flex items-center space-x-4 mt-4 md:mt-0">
@@ -60,7 +60,7 @@ const Reports = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 overflow-x-auto">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -103,7 +103,7 @@ const Reports = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-x-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Attendance Trends */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
@@ -168,7 +168,7 @@ const Reports = () => {
       </div>
 
       {/* Class Performance Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <h3 className="text-lg font-medium text-gray-900">Class Performance Analysis</h3>
           <button
@@ -178,8 +178,8 @@ const Reports = () => {
             Export
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="w-full">
+          <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

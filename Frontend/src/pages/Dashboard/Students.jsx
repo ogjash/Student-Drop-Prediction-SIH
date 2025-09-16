@@ -17,7 +17,7 @@ const Students = ({ onViewStudent }) => {
   });
 
   return (
-    <div className="space-y-6 w-full overflow-x-hidden">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Students</h2>
         <p className="text-sm text-gray-500 mt-1 md:mt-0">
@@ -32,7 +32,7 @@ const Students = ({ onViewStudent }) => {
         riskFilter={riskFilter}
         onRiskFilterChange={setRiskFilter}
       />
-      <div className="overflow-x-auto">
+      <div>
         <RiskTable students={filteredStudents} onViewStudent={onViewStudent} />
       </div>
     </div>

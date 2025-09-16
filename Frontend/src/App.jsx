@@ -9,6 +9,17 @@ const App = () => {
   const isAuthPage = pathname.includes('/auth/')
   const isDashboard = pathname.includes('/dashboard')
 
+  if (isDashboard || isAuthPage) {
+    // For dashboard and auth pages, render without ReactLenis to avoid scroll conflicts
+    return (
+      <>
+        {!isAuthPage && !isDashboard && <Navbar />}
+        <Outlet />
+        {!isAuthPage && !isDashboard && <Footer />}
+      </>
+    )
+  }
+
   return (
     <ReactLenis root>
       {!isAuthPage && !isDashboard && <Navbar />}
