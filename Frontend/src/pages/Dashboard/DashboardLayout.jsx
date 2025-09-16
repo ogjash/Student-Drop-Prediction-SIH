@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Navigate, Outlet, useLocation, Link } from 'react-router-dom'
+import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Sidebar, SidebarBody, SidebarLink } from '../../components/ui/Sidebar.jsx'
 import { 
   IconBrandTabler,
@@ -17,11 +17,21 @@ import { cn } from "@/lib/utils";
 const DashboardLayout = () => {
   const isAuthenticated = true // Temporarily set to true for development
   const location = useLocation()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
+
+  const handleLogout = () => {
+    // Clear any authentication data here (localStorage, sessionStorage, etc.)
+    // localStorage.removeItem('authToken'); // Uncomment when you have auth implementation
+    // sessionStorage.clear(); // Uncomment if using session storage
+    
+    // Redirect to home page
+    navigate('/', { replace: true });
+  };
 
   const sidebarLinks = [
     {
@@ -56,8 +66,9 @@ const DashboardLayout = () => {
     },
     {
       label: "Logout",
-      href: "/auth/logout",
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      href: "#",
+      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      onClick: handleLogout
     },
   ];
 
@@ -70,28 +81,33 @@ const DashboardLayout = () => {
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
             {open ? <Logo /> : <LogoIcon />}
-            <div className="mt-8 flex flex-col gap-2">
+            <div className="mt-10 flex flex-col gap-2">
               {sidebarLinks.map((link, idx) => (
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
-          </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: "Admin User",
-                href: "#",
-                icon: (
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-bold">
-                    A
-                  </div>
-                ),
-              }}
-            />
+            <div className="mt-80 md:mt-100 xl:mt-130">
+              <SidebarLink
+                link={{
+                  label: "Admin User",
+                  href: "#",
+                  icon: (
+                    <div className="h-7 w-7 shrink-0 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-bold">
+                      A
+                    </div>
+                  ),
+                }}
+              />
+            </div>
           </div>
         </SidebarBody>
       </Sidebar>
-      <DashboardContent />
+      <div className={cn(
+        "ml-0 md:ml-[300px] flex-1 transition-all duration-300",
+        open ? "md:ml-[300px]" : "md:ml-[60px]"
+      )}>
+        <DashboardContent />
+      </div>
     </div>
   )
 }
