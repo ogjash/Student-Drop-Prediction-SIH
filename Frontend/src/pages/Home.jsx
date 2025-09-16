@@ -1,11 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import DarkButton from '../components/ui/DarkButton.jsx'
-import LightButton from '../components/ui/LightButton.jsx'
-import { DotBackground } from '../components/ui/DotBackground.jsx'
-import { Button } from "../components/ui/MovingBorder.jsx"
-import { TabsDemo } from "../components/ui/TabsDemo.jsx"
+import { DotBackground, Button, TabsDemo, DarkButton, LightButton, Badge, Card, CardContent, TextHighlight } from '../components/index.js'
 import { motion } from "framer-motion"
 import {
   BadgeMinus,
@@ -18,9 +14,6 @@ import {
   Shield,
   Users,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import TextHighlight from '../components/ui/TextHighlight.jsx'
 
 const Home = () => {
   const container = {
@@ -46,7 +39,7 @@ const Home = () => {
     viewport: { 
       once: false, // Allow repeated animations
       margin: "-100px",
-      amount: 0.4 // Trigger animation when 40% of element is visible
+      amount: 0.2 // Trigger animation when 40% of element is visible
     }
   }
 

@@ -86,7 +86,7 @@ const DashboardLayout = () => {
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
-            <div className="mt-80 md:mt-100 xl:mt-130">
+            <div className="w-screen mt-80 md:mt-100 xl:mt-105 2xl:mt-130">
               <SidebarLink
                 link={{
                   label: "Admin User",

@@ -1,7 +1,6 @@
 import React from 'react'
-import Footer from './components/Footer.jsx'
+import {Navbar, Footer} from './components/index.js'
 import { Outlet, useLocation } from 'react-router-dom'
-import Navbar from './components/Navbar.jsx'
 import {ReactLenis} from './lib/lenis.js'
 
 const App = () => {

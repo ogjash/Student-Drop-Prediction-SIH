@@ -1,8 +1,6 @@
 import React from 'react';
 import { Users, AlertTriangle, BookOpen, TrendingUp } from 'lucide-react';
-import StatsCard from '../../components/dashboard/Cards/StatsCard';
-import AttendanceChart from '../../components/dashboard/Charts/AttendanceChart';
-import RiskTable from '../../components/dashboard/Tables/RiskTable';
+import {StatsCard, AttendanceChart, RiskTable} from '../../components/index';
 import { dashboardStats, mockStudents } from '../../data/mockData';
 
 const Overview = ({ onViewStudent }) => {

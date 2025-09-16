@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import FilterBar from '../../components/dashboard/Filters/FilterBar';
-import RiskTable from '../../components/dashboard/Tables/RiskTable';
+import {FilterBar, RiskTable} from '../../components/index';
 import { mockStudents } from '../../data/mockData';
 
 const Students = ({ onViewStudent }) => {
@@ -9,8 +8,7 @@ const Students = ({ onViewStudent }) => {
   const [riskFilter, setRiskFilter] = useState('');
 
   const filteredStudents = mockStudents.filter((student) => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || student.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClass = !classFilter || student.class === classFilter;
     const matchesRisk = !riskFilter || student.riskLevel === riskFilter;
     return matchesSearch && matchesClass && matchesRisk;
