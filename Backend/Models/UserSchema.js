@@ -28,6 +28,11 @@ const userSchema = new Schema({
     required: true,
     select: false
   },
+  contactNumber: {
+    type: String,
+    required : true,
+    trim: true
+  },
   createdAt: { type: Date, default: Date.now }
 });
 
