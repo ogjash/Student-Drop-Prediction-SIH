@@ -8,7 +8,7 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['owner', 'mod', 'user'],
+    enum: ['owner', 'admin', 'user'],
     default: 'user'
   },
   university: {
@@ -25,7 +25,13 @@ const userSchema = new Schema({
   },
   passwordHash: {
     type: String,
-    required: true
+    required: true,
+    select: false
+  },
+  contactNumber: {
+    type: String,
+    required : true,
+    trim: true
   },
   createdAt: { type: Date, default: Date.now }
 });
