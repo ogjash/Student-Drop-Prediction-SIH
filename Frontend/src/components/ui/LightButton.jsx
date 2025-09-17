@@ -1,8 +1,11 @@
 import React from 'react'
 
-const LightButton = ({ text }) => {
+const LightButton = ({ text, onClick, className = '' }) => {
   return (
-    <button className="border border-[#c4c8cf] text-[#1c1d1f] px-7 py-1 rounded-lg font-semibold hover:border-[#505967] transition inline-flex items-center gap-2">
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-[#1c1d1f] bg-white border border-[#a1a9b7] hover:bg-gray-50 hover:border-[#1c1d1f] rounded-lg transition-colors ${className}`}
+    >
       {text}
     </button>
   )

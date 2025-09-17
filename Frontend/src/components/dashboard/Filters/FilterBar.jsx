@@ -1,0 +1,55 @@
+import React from 'react';
+import { Search } from 'lucide-react';
+
+const FilterBar = ({ 
+  searchTerm, 
+  onSearchChange, 
+  classFilter, 
+  onClassFilterChange, 
+  riskFilter, 
+  onRiskFilterChange 
+}) => {
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              type="text"
+              placeholder="Search students..."
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <select
+            value={classFilter}
+            onChange={(e) => onClassFilterChange(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">All Classes</option>
+            <option value="10A">10A</option>
+            <option value="10B">10B</option>
+            <option value="11A">11A</option>
+            <option value="11B">11B</option>
+          </select>
+          <select
+            value={riskFilter}
+            onChange={(e) => onRiskFilterChange(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">All Risk Levels</option>
+            <option value="low">Low Risk</option>
+            <option value="medium">Medium Risk</option>
+            <option value="high">High Risk</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FilterBar;
