@@ -76,7 +76,7 @@ export const predictDropout = async (req, res) => {
         // Check if prediction exists for this period
         let prediction = await PredictionResult.findOne({ periodStart, periodEnd, university: universityId });
         if (prediction) {
-            return res.json({ dropoutRate: prediction.result.dropoutRate, cached: true });
+            return res.json({ dropoutRate: prediction.result.map(s => s.dropoutRate), cached: true, mergedData: prediction.result });
         }
 
         // Join sheets with StudentID as key and to call ML
@@ -93,45 +93,12 @@ export const predictDropout = async (req, res) => {
 
         // Replace with actual ML call
         const response = { data: {
-            "predictions": [
-                {
-                    "student_id": "2023UIN3301",
-                    "dropout_probability": 67.77505493164062
-                },
-                {
-                    "student_id": "2023UIN3302",
-                    "dropout_probability": 22.349990844726562
-                },
-                {
-                    "student_id": "2023UIN3303",
-                    "dropout_probability": 35.97137451171875
-                },
-                {
-                    "student_id": "2023UIN3304",
-                    "dropout_probability": 2.587336778640747
-                },
-                {
-                    "student_id": "2023UIN3305",
-                    "dropout_probability": 68.52488708496094
-                },
-                {
-                    "student_id": "2023UIN3306",
-                    "dropout_probability": 3.815338373184204
-                },
-                {
-                    "student_id": "2023UIN3307",
-                    "dropout_probability": 9.228585243225098
-                },
-                {
-                    "student_id": "2023UIN3308",
-                    "dropout_probability": 25.04165267944336
-                },
-                {
-                    "student_id": "2023UIN3309",
-                    "dropout_probability": 5.134696960449219
-                }
-            ]
-        } };
+            "predictions": formattedData.map(student => ({
+                student_id: student.student_id,
+                dropout_probability: Math.random() * 100 // random for demo
+            }))
+        }};
+
         // merge response with formattedData on student_id
         const mergedData = formattedData.map(student => {
             const predictionEntry = response.data.predictions.find(p => p.student_id === student.student_id);
@@ -140,14 +107,13 @@ export const predictDropout = async (req, res) => {
                 dropoutRate: predictionEntry ? predictionEntry.dropout_probability : null
             };
         });
-        // Store result in DB
-        prediction = new PredictionResult({
-            university: universityId,
-            periodStart,
-            periodEnd,
-            result: mergedData,
-        });
-        await prediction.save();
+
+        // Upsert prediction result
+        await PredictionResult.findOneAndUpdate(
+            { university: universityId, periodStart, periodEnd },
+            { result: mergedData, lastUpdated: new Date() },
+            { upsert: true, new: true }
+        );
 
         res.json({ dropoutRate: mergedData.map(student => student.dropoutRate), cached: false, mergedData });
     } catch (err) {
@@ -201,7 +167,7 @@ export const refreshPrediction = async (req, res) => {
             };
         });
 
-        // Upsert prediction result
+        // Upsert prediction result (always refresh)
         await PredictionResult.findOneAndUpdate(
             { university: universityId, periodStart, periodEnd },
             { result: mergedData, lastUpdated: new Date() },
@@ -220,6 +186,17 @@ export const predictDropoutForAllUniversities = async (period) => {
         try {
             const { feesLink, attendanceLink, marksheetLink } = university;
             if (!feesLink || !attendanceLink || !marksheetLink) continue;
+
+            // Check if prediction already exists for this university and period
+            const existing = await PredictionResult.findOne({
+                university: university._id,
+                periodStart: period.periodStart,
+                periodEnd: period.periodEnd
+            });
+            if (existing) {
+                console.log(`Prediction already exists for university ${university._id} and period, skipping ML call.`);
+                continue;
+            }
 
             const [feesSheet, attendanceSheet, marksSheet] = await Promise.all([
                 fetchSheetData(feesLink),

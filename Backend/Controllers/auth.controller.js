@@ -10,15 +10,24 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register a university and its owner user
 export const registerUniversity = async (req, res) => {
+    const session = await University.startSession();
+    session.startTransaction();
     try {
-        const { username, domain, universityName, password } = req.body;
+        const { username, domain, universityName, password, contactNumber } = req.body;
+        if (!username || !domain || !universityName || !password || !contactNumber) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: 'Please provide all required fields' });
+        }
         const role = 'owner';
 
-        const isUniversity = await University.findOne({ domain });
-        if (isUniversity) return res.status(400).json({ message: 'Domain already registered' });
+        const isUniversity = await University.findOne({ domain }).session(session);
+        if (isUniversity) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: 'Domain already registered' });
+        }
 
         const university = new University({ name: universityName, domain });
-        await university.save();
+        await university.save({ session });
 
         const email = `${username}@${domain}`;
         const salt = await bcrypt.genSalt(10);
@@ -28,16 +37,22 @@ export const registerUniversity = async (req, res) => {
             university: university._id,
             email,
             passwordHash,
+            contactNumber,
             role,
         });
-        await user.save();
+        await user.save({ session });
 
         university.owner = user._id;
         university.users.push(user._id);
-        await university.save();
+        await university.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
 
         res.status(201).json({ message: 'University and owner registered successfully.' });
     } catch (err) {
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).json({ message: err.message });
     }
 };

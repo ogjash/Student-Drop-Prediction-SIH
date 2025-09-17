@@ -8,4 +8,10 @@ const PredictionResultSchema = new mongoose.Schema({
   lastUpdated: { type: Date, default: Date.now }
 });
 
+// Compound unique index for one doc per university per period
+PredictionResultSchema.index(
+  { university: 1, periodStart: 1, periodEnd: 1 },
+  { unique: true }
+);
+
 export const PredictionResult = mongoose.model('PredictionResult', PredictionResultSchema);

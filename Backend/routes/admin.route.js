@@ -5,8 +5,8 @@ import { authenticateToken } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 router.use(authenticateToken);
 
-router.post('/predictdropout', predictDropout);
-router.post('/refreshPrediction', refreshPrediction);
+router.get('/predictdropout', predictDropout);
+router.get('/refreshPrediction', refreshPrediction);
 router.post('/storedatalinks', storeDataLinks);
 
 export default router;
