@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { Upload, Users, Eye, EyeOff, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Upload, Users, Eye, EyeOff, X, Trash2 } from 'lucide-react';
+import { registerUser, removeUser, userList } from '../../api/auth';
 
 function generateRandomPassword(length = 12) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
@@ -17,11 +18,12 @@ const AddUser = () => {
   const [showAddAdminForm, setShowAddAdminForm] = useState(false);
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
     username: '',
-    phone: '',
+    contactNumber: '',
     email: '',
     department: '',
     password: ''
@@ -32,6 +34,22 @@ const AddUser = () => {
   const feesFileRef = useRef();
   const marksheetFileRef = useRef();
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await userList();
+      setUsers(res.data);
+    } catch (err) {
+      console.log(err);
+
+    }
+    setLoading(false);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -41,26 +59,49 @@ const AddUser = () => {
     setFormData(prev => ({ ...prev, password: generateRandomPassword() }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.phone || !formData.email || !formData.department || !formData.password) {
-      alert('Please fill in all fields');
+    if (
+      !formData.username ||
+      !formData.contactNumber ||
+      !formData.email ||
+      !formData.password
+    ) {
+      alert('Please fill in all required fields');
       return;
     }
-    const newUser = {
-      id: Date.now().toString(),
-      ...formData,
-      createdAt: new Date()
-    };
-    setUsers(prev => [...prev, newUser]);
-    setFormData({ username: '', phone: '', email: '', department: '', password: '' });
-    setShowAddAdminForm(false);
-    alert(`Password sent to ${formData.email}`);
+    try {
+      await registerUser({
+        username: formData.username,
+        domain: formData.email.split('@')[1], // domain from email
+        password: formData.password,
+        contactNumber: formData.contactNumber,
+        // department: formData.department, // uncomment if backend expects department
+      });
+      
+
+      await fetchUsers();
+      setFormData({ username: '', contactNumber: '', email: '', department: '', password: '' });
+      setShowAddAdminForm(false);
+      alert(`Password sent to ${formData.email}`);
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to add user');
+    }
   };
 
   const handleCancel = () => {
     setShowAddAdminForm(false);
-    setFormData({ username: '', phone: '', email: '', department: '', password: '' });
+    setFormData({ username: '', contactNumber: '', email: '', department: '', password: '' });
+  };
+
+  const handleRemoveUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to remove this user?')) return;
+    try {
+      await removeUser({ userId });
+      setUsers(prev => prev.filter(u => u._id !== userId));
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to remove user');
+    }
   };
 
   // File input handlers (demo only)
@@ -154,6 +195,16 @@ const AddUser = () => {
             />
           </div>
         </div>
+        {/* Upload Button below the links section */}
+        <div className="flex justify-end mb-4">
+          <button
+            type="button"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
+            onClick={() => alert('Upload functionality not implemented yet')}
+          >
+            Upload
+          </button>
+        </div>
         {/* Add Admin Button */}
         <button 
           onClick={() => setShowAddAdminForm(true)}
@@ -183,19 +234,18 @@ const AddUser = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone
+                       Username
                     </label>
                     <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
+                      type="text"
+                      name="username"
+                      value={formData.username}
                       onChange={handleInputChange}
-                      placeholder="Enter phone number"
+                      placeholder="Enter username"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
-                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email
@@ -210,7 +260,20 @@ const AddUser = () => {
                       required
                     />
                   </div>
-                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      value={formData.contactNumber}
+                      onChange={handleInputChange}
+                      placeholder="Enter contact number"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Department
@@ -220,7 +283,6 @@ const AddUser = () => {
                       value={formData.department}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
                     >
                       <option value="">Select Department</option>
                       <option value="Computer Science">Computer Science</option>
@@ -233,7 +295,6 @@ const AddUser = () => {
                       <option value="Economics">Economics</option>
                     </select>
                   </div>
-                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Password
@@ -300,7 +361,9 @@ const AddUser = () => {
           </div>
         </div>
         <div className="px-6 py-4">
-          {users.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-8 text-gray-500">Loading...</div>
+          ) : users.length === 0 ? (
             <div className="text-center py-8">
               <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 text-sm">No users yet.</p>
@@ -308,7 +371,7 @@ const AddUser = () => {
           ) : (
             <div className="space-y-4">
               {users.map((user) => (
-                <div key={user.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div key={user._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
@@ -320,13 +383,14 @@ const AddUser = () => {
                         <div className="flex items-center space-x-6">
                           <div>
                             <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                            <p className="text-sm text-gray-500">{user.phone}</p>
+                            <p className="text-sm text-gray-500">{user.contactNumber}</p>
                             <p className="text-sm text-gray-500">{user.username}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-600">{user.department}</p>
+                            {/* Optionally display department if available */}
+                            {/* <p className="text-sm text-gray-600">{user.department}</p> */}
                             <p className="text-xs text-gray-400">
-                              Added {user.createdAt.toLocaleDateString()}
+                              Added {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''}
                             </p>
                           </div>
                         </div>
@@ -335,8 +399,17 @@ const AddUser = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
-                      Admin
+                      {user.role}
                     </span>
+                    {user.role !== 'owner' && (
+                      <button
+                        onClick={() => handleRemoveUser(user._id)}
+                        className="ml-2 px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded transition-colors flex items-center"
+                        title="Remove user"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

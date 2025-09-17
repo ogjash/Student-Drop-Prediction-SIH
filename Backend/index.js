@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
-import { corsConfig } from './config/corsconfig.js';
+import { corsConfig } from './config/corsConfig.js';
 import authRoutes from './routes/auth.routes.js';
 import ownerRoutes from './routes/owner.routes.js';
 

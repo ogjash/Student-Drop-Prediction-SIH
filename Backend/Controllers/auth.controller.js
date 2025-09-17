@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Register a university and its owner user
 export const registerUniversity = async (req, res) => {
     try {
-        const { username, domain, universityName, password } = req.body;
+        const { username, domain, universityName, password, contactNumber } = req.body; // add contactNumber
         const role = 'owner';
 
         const isUniversity = await University.findOne({ domain });
@@ -29,6 +29,7 @@ export const registerUniversity = async (req, res) => {
             email,
             passwordHash,
             role,
+            contactNumber // add contactNumber
         });
         await user.save();
 
@@ -45,9 +46,9 @@ export const registerUniversity = async (req, res) => {
 // Register a normal user (role defaults to 'user')
 export const registerUsers = async (req, res) => {
     try {
-        const { username, domain, password } = req.body;
-        if (!username || !domain || !password) {
-            return res.status(400).json({ message: 'Please provide username, domain, and password' });
+        const { username, domain, password, contactNumber } = req.body; // add contactNumber
+        if (!username || !domain || !password || !contactNumber) { // check contactNumber
+            return res.status(400).json({ message: 'Please provide username, domain, password, and contact number' });
         }
         const university = await University.findOne({ domain });
         if (!university) {
@@ -64,7 +65,14 @@ export const registerUsers = async (req, res) => {
         }
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
-        const user = new User({ username, email, passwordHash, university: university._id, role: 'user' });
+        const user = new User({ 
+            username, 
+            email, 
+            passwordHash, 
+            university: university._id, 
+            role: 'user',
+            contactNumber // add contactNumber
+        });
         await user.save();
         university.users.push(user._id);
         await university.save();
