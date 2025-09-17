@@ -3,10 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-
 import connectDB from './config/db.js';
 import { corsConfig } from './config/corsconfig.js';
 import authRoutes from './routes/auth.routes.js';
+import ownerRoutes from './routes/owner.routes.js';
 
 dotenv.config();
 
@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/owner', ownerRoutes);
 
 connectDB();
 app.listen(port, () => {
