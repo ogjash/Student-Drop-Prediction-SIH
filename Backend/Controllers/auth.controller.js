@@ -39,6 +39,7 @@ export const registerUniversity = async (req, res) => {
             passwordHash,
             contactNumber,
             role,
+            contactNumber // add contactNumber
         });
         await user.save({ session });
 

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import DarkButton from '../../components/ui/DarkButton'
 import { BackgroundRippleEffect } from '../../components/ui/BackgroundRippleEffect'
+import { login as loginApi } from '../../api/auth'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -12,6 +13,7 @@ const Login = () => {
     password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -20,11 +22,18 @@ const Login = () => {
     }))
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    // Add your login logic here
-    // For now, just redirect to dashboard
-    navigate('/dashboard')
+    setError('')
+    try {
+      await loginApi(formData)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+        'Login failed. Please check your credentials.'
+      )
+    }
   }
 
   return (
@@ -41,7 +50,9 @@ const Login = () => {
         <Card className="border border-gray-200 bg-white shadow-sm">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Login</h2>
-            
+            {error && (
+              <div className="mb-4 text-red-600 text-sm text-center">{error}</div>
+            )}
             <form className="space-y-6">
               <div>
                 <label className="text-sm text-gray-600">Email</label>

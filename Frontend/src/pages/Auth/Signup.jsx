@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import DarkButton from '../../components/ui/DarkButton'
 import { BackgroundRippleEffect } from '../../components/ui/BackgroundRippleEffect'
+import { registerUniversity } from '../../api/auth'
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -12,10 +13,12 @@ const Signup = () => {
     domain: '',
     university: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    contactNumber: '' // add contactNumber
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -24,11 +27,28 @@ const Signup = () => {
     }))
   }
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault()
-    // Add your signup logic here
-    // For now, just redirect to dashboard
-    navigate('/dashboard')
+    setError('')
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    try {
+      await registerUniversity({
+        username: formData.username,
+        domain: formData.domain,
+        universityName: formData.university,
+        password: formData.password,
+        contactNumber: formData.contactNumber // add contactNumber
+      })
+      navigate('/dashboard')
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+        'Signup failed. Please check your details.'
+      )
+    }
   }
 
   return (
@@ -45,7 +65,9 @@ const Signup = () => {
         <Card className="border border-gray-200 bg-white shadow-sm">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Create Account</h2>
-            
+            {error && (
+              <div className="mb-4 text-red-600 text-sm text-center">{error}</div>
+            )}
             <form className="space-y-6">
               <div className="space-y-2">
                 <div className="flex gap-4">
@@ -136,6 +158,19 @@ const Signup = () => {
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600">Contact Number</label>
+                <input
+                  type="text"
+                  name="contactNumber"
+                  placeholder="Enter contact number"
+                  value={formData.contactNumber}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-900 
+                    focus:outline-none focus:ring-2 focus:ring-gray-500 placeholder-gray-400"
+                />
               </div>
 
               <DarkButton
