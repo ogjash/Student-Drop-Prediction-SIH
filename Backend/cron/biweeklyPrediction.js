@@ -1,9 +1,18 @@
 import cron from 'node-cron';
-import { PredictionResult } from '../Models/PredictionResult.js';
+import dotenv from 'dotenv';
+import connectDB from '../config/db.js';
 import { predictDropoutForAllUniversities } from '../Controllers/prediction.controller.js';
 
+// Explicitly load .env from Backend directory
+dotenv.config({ path: '../.env' });
+
+await connectDB();
+
 // Runs every 2 weeks on Monday at 2am
-cron.schedule('0 2 * * 1', async () => {
+// for testing, runs every minute '* * * * *'
+// for production, use '0 2 * * 1' (2 AM every Monday)
+// for every 1st and 16th of the month at 2am '0 2 1,16 * *'
+cron.schedule('* * * * *', async () => {
   const now = new Date();
   const period = getCurrentBiweeklyPeriod(now);
   await predictDropoutForAllUniversities(period);
