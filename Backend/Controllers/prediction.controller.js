@@ -105,17 +105,20 @@ export const predictDropout = async (req, res) => {
         }
         const formattedData = formatStudentData(joinedData);
 
-        // Replace with actual ML call
-        const response = { data: {
-            "predictions": formattedData.map(student => ({
-                student_id: student.student_id,
-                dropout_probability: Math.random() * 100 // random for demo
-            }))
-        }};
-
+        // Call ML model
+        const mlResponse = await fetch(process.env.ML_MODEL_PATH, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mergedData: formattedData })
+        });
+        const responseData = await mlResponse.json();
+        console.log('ML API response:', responseData);
+        const predictions = Array.isArray(responseData.predictions) ? responseData.predictions : [];
         // merge response with formattedData on student_id
         const mergedData = formattedData.map(student => {
-            const predictionEntry = response.data.predictions.find(p => p.student_id === student.student_id);
+            const predictionEntry = predictions.find(p => p.student_id === student.student_id);
             return {
                 ...student,
                 dropoutRate: predictionEntry ? predictionEntry.dropout_probability : null
@@ -195,18 +198,20 @@ export const refreshPrediction = async (req, res) => {
             return res.status(400).json({ message: 'No matching records found across the sheets' });
         }
         const formattedData = formatStudentData(joinedData);
-
-        // Replace with actual ML call
-        const response = { data: {
-            "predictions": formattedData.map(student => ({
-                student_id: student.student_id,
-                dropout_probability: Math.random() * 100 // random for demo
-            }))
-        }};
-
+        // Call ML model
+        const mlResponse = await fetch(process.env.ML_MODEL_PATH, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mergedData: formattedData })
+        });
+        const responseData = await mlResponse.json();
+        console.log('ML API response:', responseData);
+        const predictions = Array.isArray(responseData.predictions) ? responseData.predictions : [];
         // Merge predictions with formatted data
         const mergedData = formattedData.map(student => {
-            const predictionEntry = response.data.predictions.find(p => p.student_id === student.student_id);
+            const predictionEntry = predictions.find(p => p.student_id === student.student_id);
             return {
                 ...student,
                 dropoutRate: predictionEntry ? predictionEntry.dropout_probability : null
@@ -278,16 +283,19 @@ export const predictDropoutForAllUniversities = async (period) => {
             const joinedData = mergeByStudentID(feesSheet, attendanceSheet, marksSheet);
             if (joinedData.length === 0) continue;
             const formattedData = formatStudentData(joinedData);
-
-            const response = { data: {
-                "predictions": formattedData.map(student => ({
-                    student_id: student.student_id,
-                    dropout_probability: Math.random() * 100
-                }))
-            }};
-
+            // Call ML model
+            const mlResponse = await fetch(process.env.ML_MODEL_PATH, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mergedData: formattedData })
+            });
+            const responseData = await mlResponse.json();
+            console.log('ML API response:', responseData);
+            const predictions = Array.isArray(responseData.predictions) ? responseData.predictions : [];
             const mergedData = formattedData.map(student => {
-                const predictionEntry = response.data.predictions.find(p => p.student_id === student.student_id);
+                const predictionEntry = predictions.find(p => p.student_id === student.student_id);
                 return {
                     ...student,
                     dropoutRate: predictionEntry ? predictionEntry.dropout_probability : null
