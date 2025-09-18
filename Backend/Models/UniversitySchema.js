@@ -31,6 +31,11 @@ const universitySchema = new Schema({
     trim: true,
     match: /^(https?:\/\/)?(www\.)?docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+(\/.*)?$/
   },
+  studentDetailsLink: {
+    type: String,
+    trim: true,
+    match: /^(https?:\/\/)?(www\.)?docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+(\/.*)?$/
+  },
   users:[{
     type: Types.ObjectId,
     ref: 'User',

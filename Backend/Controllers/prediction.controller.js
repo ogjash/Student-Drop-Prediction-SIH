@@ -122,14 +122,45 @@ export const predictDropout = async (req, res) => {
             };
         });
 
+        // Fetch student details sheet and merge with mergedData
+        if (!university.studentDetailsLink) {
+            return res.status(400).json({ message: 'University does not have student details link' });
+        }
+        const studentDetailsSheet = await fetchSheetData(university.studentDetailsLink);
+        console.log('Student details sheet length:', studentDetailsSheet.length);
+        console.log('Student details sheet sample:', studentDetailsSheet[0]);
+        console.log('Available columns:', Object.keys(studentDetailsSheet[0] || {}));
+        // Create a map for quick lookup
+        const detailsMap = {};
+        studentDetailsSheet.forEach(row => {
+          const id = String(row.StudentID || row.studentID || row["student id"]).trim();
+          if (id && id !== 'undefined') detailsMap[id] = row;
+        });
+        console.log('Details map keys:', Object.keys(detailsMap));
+        console.log('Sample details map entry:', Object.values(detailsMap)[0]);
+
+        const finalMergedData = mergedData.map(student => {
+          const id = String(student.student_id).trim();
+          const details = detailsMap[id] || {};
+          return {
+            ...student,
+            name: details.name || details.Name || details["Name"] || null,
+            email: details.email || details.Email || details["Email"] || null,
+            phone: details.phone || details.Phone || details["Phone"] || details.mobile || details.Mobile || details["Mobile"] || null,
+            class: details.class || details.Class || details["Class"] || null,
+            department: details.department || details.Department || details["Department"] || null,
+            year: details.year || details.Year || details["Year"] || null
+          };
+        });
+
         // Upsert prediction result
         await PredictionResult.findOneAndUpdate(
             { university: universityId, periodStart, periodEnd },
-            { result: mergedData, lastUpdated: new Date() },
+            { result: finalMergedData, lastUpdated: new Date() },
             { upsert: true, new: true }
         );
 
-        res.json({ dropoutRate: mergedData.map(student => student.dropoutRate), cached: false, mergedData });
+        res.json({ dropoutRate: finalMergedData.map(student => student.dropoutRate), cached: false, mergedData: finalMergedData });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -146,17 +177,18 @@ export const refreshPrediction = async (req, res) => {
         if (!university) {
             return res.status(404).json({ message: 'University not found' });
         }
-        const { feesLink, attendanceLink, marksheetLink } = university;
-        if (!feesLink || !attendanceLink || !marksheetLink) {
+        const { feesLink, attendanceLink, marksheetLink, studentDetailsLink } = university;
+        if (!feesLink || !attendanceLink || !marksheetLink || !studentDetailsLink) {
             return res.status(400).json({ message: 'University does not have all required data links' });
         }
         const { periodStart, periodEnd } = getCurrentBiweeklyPeriod();
 
         // Fetch and merge sheets
-        const [feesSheet, attendanceSheet, marksSheet] = await Promise.all([
+        const [feesSheet, attendanceSheet, marksSheet, studentDetailsSheet] = await Promise.all([
             fetchSheetData(feesLink),
             fetchSheetData(attendanceLink),
             fetchSheetData(marksheetLink),
+            fetchSheetData(studentDetailsLink),
         ]);
         const joinedData = mergeByStudentID(feesSheet, attendanceSheet, marksSheet);
         if (joinedData.length === 0) {
@@ -181,13 +213,38 @@ export const refreshPrediction = async (req, res) => {
             };
         });
 
+        // Merge student details
+        const detailsMap = {};
+        studentDetailsSheet.forEach(row => {
+            const id = String(row.StudentID || row.studentID || row["student id"]).trim();
+            if (id && id !== 'undefined') detailsMap[id] = row;
+        });
+        console.log('Student details sheet length:', studentDetailsSheet.length);
+        console.log('Student details sheet sample:', studentDetailsSheet[0]);
+        console.log('Available columns:', Object.keys(studentDetailsSheet[0] || {}));
+        console.log('Details map keys:', Object.keys(detailsMap));
+        console.log('Sample details map entry:', Object.values(detailsMap)[0]);
+        const finalMergedData = mergedData.map(student => {
+            const id = String(student.student_id).trim();
+            const details = detailsMap[id] || {};
+            return {
+                ...student,
+                name: details.name || details.Name || details["Name"] || null,
+                email: details.email || details.Email || details["Email"] || null,
+                phone: details.phone || details.Phone || details["Phone"] || details.mobile || details.Mobile || details["Mobile"] || null,
+                class: details.class || details.Class || details["Class"] || null,
+                department: details.department || details.Department || details["Department"] || null,
+                year: details.year || details.Year || details["Year"] || null
+            };
+        });
+
         // Upsert prediction result (always refresh)
         await PredictionResult.findOneAndUpdate(
             { university: universityId, periodStart, periodEnd },
-            { result: mergedData, lastUpdated: new Date() },
+            { result: finalMergedData, lastUpdated: new Date() },
             { upsert: true, new: true }
         );
-        res.json({ dropoutRate: mergedData.map(student => student.dropoutRate), refreshed: true, mergedData });
+        res.json({ dropoutRate: finalMergedData.map(student => student.dropoutRate), refreshed: true, mergedData: finalMergedData });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -198,8 +255,8 @@ export const predictDropoutForAllUniversities = async (period) => {
     const universities = await University.find({});
     for (const university of universities) {
         try {
-            const { feesLink, attendanceLink, marksheetLink } = university;
-            if (!feesLink || !attendanceLink || !marksheetLink) continue;
+            const { feesLink, attendanceLink, marksheetLink, studentDetailsLink } = university;
+            if (!feesLink || !attendanceLink || !marksheetLink || !studentDetailsLink) continue;
 
             // Check if prediction already exists for this university and period
             const existing = await PredictionResult.findOne({
@@ -212,10 +269,11 @@ export const predictDropoutForAllUniversities = async (period) => {
                 continue;
             }
 
-            const [feesSheet, attendanceSheet, marksSheet] = await Promise.all([
+            const [feesSheet, attendanceSheet, marksSheet, studentDetailsSheet] = await Promise.all([
                 fetchSheetData(feesLink),
                 fetchSheetData(attendanceLink),
                 fetchSheetData(marksheetLink),
+                fetchSheetData(studentDetailsLink),
             ]);
             const joinedData = mergeByStudentID(feesSheet, attendanceSheet, marksSheet);
             if (joinedData.length === 0) continue;
@@ -236,9 +294,29 @@ export const predictDropoutForAllUniversities = async (period) => {
                 };
             });
 
+            // Merge student details
+            const detailsMap = {};
+            studentDetailsSheet.forEach(row => {
+                const id = String(row.StudentID || row.studentID || row["student id"]).trim();
+                if (id && id !== 'undefined') detailsMap[id] = row;
+            });
+            const finalMergedData = mergedData.map(student => {
+                const id = String(student.student_id).trim();
+                const details = detailsMap[id] || {};
+                return {
+                    ...student,
+                    name: details.name || details.Name || details["Name"] || null,
+                    email: details.email || details.Email || details["Email"] || null,
+                    phone: details.phone || details.Phone || details["Phone"] || details.mobile || details.Mobile || details["Mobile"] || null,
+                    class: details.class || details.Class || details["Class"] || null,
+                    department: details.department || details.Department || details["Department"] || null,
+                    year: details.year || details.Year || details["Year"] || null
+                };
+            });
+
             await PredictionResult.findOneAndUpdate(
                 { university: university._id, periodStart: period.periodStart, periodEnd: period.periodEnd },
-                { result: mergedData, lastUpdated: new Date() },
+                { result: finalMergedData, lastUpdated: new Date() },
                 { upsert: true, new: true }
             );
         } catch (err) {
@@ -250,7 +328,7 @@ export const predictDropoutForAllUniversities = async (period) => {
 export const storeDataLinks = async (req, res) => {
     try {
         const universityId = req.user.university;
-        const { feesLink, attendanceLink, marksheetLink } = req.body;
+        const { feesLink, attendanceLink, marksheetLink, studentDetailsLink } = req.body;
         if (!universityId) {
             return res.status(400).json({ message: 'universityId is required' });
         }
@@ -261,11 +339,10 @@ export const storeDataLinks = async (req, res) => {
         if (feesLink) university.feesLink = feesLink;
         if (attendanceLink) university.attendanceLink = attendanceLink;
         if (marksheetLink) university.marksheetLink = marksheetLink;
+        if (studentDetailsLink) university.studentDetailsLink = studentDetailsLink;
         await university.save();
         res.json({ message: 'Data links updated successfully' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
-
-
