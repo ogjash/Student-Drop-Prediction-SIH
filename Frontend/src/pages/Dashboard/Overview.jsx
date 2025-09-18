@@ -20,7 +20,8 @@ const Overview = () => {
         setStats(data);
         setStudents(data.students || []);
         setDropoutRates(data.dropoutRate || []);
-      } catch (err) {
+      } catch (error) {
+        console.error('Failed to fetch prediction data:', error);
         setStats(null);
         setStudents([]);
         setDropoutRates([]);

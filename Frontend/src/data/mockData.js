@@ -13,43 +13,39 @@ export const departments = [
 import { predictDropout } from '../api/auth';
 
 export const getAndStorePrediction = async () => {
-  try {
-    const response = await predictDropout();
-    const data = response.data;
-    const students = data.mergedData || [];
-    const dropoutRate = data.dropoutRate || [];
-    const totalStudents = students.length;
-    const atRiskStudents = students.filter(s => s.dropoutRate >= 30).length;
+  const response = await predictDropout();
+  const data = response.data;
+  const students = data.mergedData || [];
+  const dropoutRate = data.dropoutRate || [];
+  const totalStudents = students.length;
+  const atRiskStudents = students.filter(s => s.dropoutRate >= 30).length;
 
-    // averageAttendance
-    const averageAttendance = students.length
-      ? Math.round(students.reduce((sum, s) => sum + (s.attendance_percentage || 0), 0) / students.length)
-      : 0;
+  // averageAttendance
+  const averageAttendance = students.length
+    ? Math.round(students.reduce((sum, s) => sum + (s.attendance_percentage || 0), 0) / students.length)
+    : 0;
 
-    // averageTestScore (average of all test scores for all students)
-    let totalTestScore = 0;
-    let testScoreCount = 0;
-    students.forEach(s => {
-      ['test_score_1', 'test_score_2', 'test_score_3'].forEach(key => {
-        if (typeof s[key] === 'number') {
-          totalTestScore += s[key];
-          testScoreCount++;
-        }
-      });
+  // averageTestScore (average of all test scores for all students)
+  let totalTestScore = 0;
+  let testScoreCount = 0;
+  students.forEach(s => {
+    ['test_score_1', 'test_score_2', 'test_score_3'].forEach(key => {
+      if (typeof s[key] === 'number') {
+        totalTestScore += s[key];
+        testScoreCount++;
+      }
     });
-    const averageTestScore = testScoreCount ? Math.round(totalTestScore / testScoreCount) : 0;
+  });
+  const averageTestScore = testScoreCount ? Math.round(totalTestScore / testScoreCount) : 0;
 
-    return {
-      totalStudents,
-      dropoutRate,
-      atRiskStudents,
-      averageAttendance,
-      averageTestScore,
-      students 
-    };
-  } catch (error) {
-    throw error;
-  }
+  return {
+    totalStudents,
+    dropoutRate,
+    atRiskStudents,
+    averageAttendance,
+    averageTestScore,
+    students 
+  };
 };
 
 
