@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Users, Eye, EyeOff, X, Trash2 } from 'lucide-react';
-import { registerUser, removeUser, userList } from '../../api/auth';
+import { registerUser, removeUser, userList, sendfile } from '../../api/auth';
 
 function generateRandomPassword(length = 12) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
@@ -10,6 +10,7 @@ function generateRandomPassword(length = 12) {
   }
   return password;
 }
+
 
 const AddUser = () => {
   const [attendanceLink, setAttendanceLink] = useState('');
@@ -101,6 +102,24 @@ const AddUser = () => {
       setUsers(prev => prev.filter(u => u._id !== userId));
     } catch (err) {
       alert(err?.response?.data?.message || 'Failed to remove user');
+    }
+  };
+
+  const handleUploadLinks = async () => {
+    if (!attendanceLink || !feesLink || !marksheetLink) {
+      alert('Please fill in all Google Sheets links before uploading');
+      return;
+    }
+
+    try {
+      await sendfile({
+        attendanceLink,
+        feesLink,
+        marksheetLink
+      });
+      alert('Google Sheets links uploaded successfully!');
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to upload links');
     }
   };
 
@@ -200,7 +219,7 @@ const AddUser = () => {
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
-            onClick={() => alert('Upload functionality not implemented yet')}
+            onClick={handleUploadLinks}
           >
             Upload
           </button>
