@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { DotBackground, MovingButton, TabsDemo, DarkButton, LightButton, Badge, Card, CardContent, TextHighlight } from '../components/index.js'
 import { motion } from "framer-motion"
 import {
