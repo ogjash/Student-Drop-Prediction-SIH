@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, AlertTriangle, BookOpen, TrendingUp } from 'lucide-react';
 import {StatsCard, AttendanceChart, RiskTable} from '../../components/index';
 import { dashboardStats, mockStudents } from '../../data/mockData';
 
-const Overview = ({ onViewStudent }) => {
+const Overview = () => {
+  const navigate = useNavigate();
+  
+  const handleViewStudent = (student) => {
+    navigate(`/dashboard/student/${student.id}`);
+  };
+  
   const chartData = [
     { date: '2024-01-01', attendance: 88, testScore: 82 },
     { date: '2024-01-02', attendance: 85, testScore: 79 },
@@ -57,7 +64,7 @@ const Overview = ({ onViewStudent }) => {
       </div>
       {/* Risk Table */}
       <div>
-        <RiskTable students={mockStudents} onViewStudent={onViewStudent} />
+        <RiskTable students={mockStudents} onViewStudent={handleViewStudent} />
       </div>
     </div>
   );

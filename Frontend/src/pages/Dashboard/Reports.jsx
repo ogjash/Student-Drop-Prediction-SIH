@@ -1,9 +1,41 @@
 import React, { useState } from 'react';
 import { Download, Calendar, Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { mockStudents, dashboardStats } from '../../data/mockData';
 
 const Reports = () => {
   const [dateRange, setDateRange] = useState('last30days');
+
+  // Calculate class performance from actual data
+  const calculateClassPerformance = () => {
+    const classGroups = {};
+    
+    // Group students by class
+    mockStudents.forEach(student => {
+      if (!classGroups[student.class]) {
+        classGroups[student.class] = {
+          students: [],
+          totalAttendance: 0,
+          totalScore: 0,
+          count: 0
+        };
+      }
+      classGroups[student.class].students.push(student);
+      classGroups[student.class].totalAttendance += student.attendance;
+      classGroups[student.class].totalScore += student.testScore;
+      classGroups[student.class].count++;
+    });
+
+    // Calculate averages for each class
+    return Object.keys(classGroups).map(className => ({
+      class: className,
+      attendance: Math.round(classGroups[className].totalAttendance / classGroups[className].count),
+      avgScore: Math.round(classGroups[className].totalScore / classGroups[className].count),
+      studentCount: classGroups[className].count
+    })).sort((a, b) => a.class.localeCompare(b.class));
+  };
+
+  const classPerformanceData = calculateClassPerformance();
 
   const attendanceData = [
     { month: 'Sep', rate: 88 },
@@ -17,16 +49,6 @@ const Reports = () => {
     { name: 'Safe', value: 78, color: '#10b981' },
     { name: 'Warning', value: 15, color: '#f59e0b' },
     { name: 'High Risk', value: 7, color: '#ef4444' },
-  ];
-
-  const classPerformanceData = [
-    { class: '9A', attendance: 92, avgScore: 84 },
-    { class: '9B', attendance: 88, avgScore: 79 },
-    { class: '10A', attendance: 95, avgScore: 88 },
-    { class: '10B', attendance: 85, avgScore: 76 },
-    { class: '10C', attendance: 89, avgScore: 82 },
-    { class: '11A', attendance: 94, avgScore: 91 },
-    { class: '11B', attendance: 87, avgScore: 78 },
   ];
 
   const handleExportReport = (reportType) => {
@@ -75,7 +97,7 @@ const Reports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Students Analyzed</p>
-              <p className="text-lg font-semibold text-gray-900">156</p>
+              <p className="text-lg font-semibold text-gray-900">{dashboardStats.totalStudents}</p>
             </div>
             <Users className="h-8 w-8 text-green-500" />
           </div>
@@ -85,7 +107,7 @@ const Reports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Avg Performance</p>
-              <p className="text-lg font-semibold text-gray-900">84.2%</p>
+              <p className="text-lg font-semibold text-gray-900">{dashboardStats.averageTestScore}%</p>
             </div>
             <TrendingUp className="h-8 w-8 text-purple-500" />
           </div>
@@ -95,7 +117,7 @@ const Reports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Risk Cases</p>
-              <p className="text-lg font-semibold text-gray-900">23</p>
+              <p className="text-lg font-semibold text-gray-900">{dashboardStats.atRiskStudents}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-red-500" />
           </div>

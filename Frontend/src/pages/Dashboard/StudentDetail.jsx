@@ -1,8 +1,26 @@
 import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, User, AlertTriangle, TrendingDown, DollarSign } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { mockStudents } from '../../data/mockData';
 
-const StudentDetail = ({ student, onBack }) => {
+const StudentDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const student = mockStudents.find(s => String(s.id) === String(id));
+
+  if (!student) {
+    return (
+      <div className="space-y-6 w-full">
+        <button onClick={() => navigate('/dashboard/students')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back to Students
+        </button>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="text-red-600">Student not found.</div>
+        </div>
+      </div>
+    );
+  }
   const attendanceData = student.attendanceHistory.map((entry, index) => ({
     day: `Day ${index + 1}`,
     present: entry.present ? 1 : 0,
@@ -59,7 +77,7 @@ const StudentDetail = ({ student, onBack }) => {
   };
   return (
     <div className="space-y-6 w-full overflow-x-hidden">
-      <button onClick={onBack} className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200">
+      <button onClick={() => navigate('/dashboard/students')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to List
       </button>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">

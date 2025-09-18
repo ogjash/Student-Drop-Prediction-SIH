@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5000/api/auth'; 
-const OWNER_BASE = 'http://localhost:5000/api/owner';
+const API_BASE = 'http://localhost:5176/api/auth'; 
+const OWNER_BASE = 'http://localhost:5176/api/owner';
 
 export const registerUniversity = async (data) => {
     return axios.post(`${API_BASE}/registerUniversity`, data, { withCredentials: true });
@@ -32,3 +32,8 @@ export const logout = async () => {
 export const verify = async () => {
     return axios.get(`${API_BASE}/verify`, { withCredentials: true });
 };
+
+export const storeDataLinks = async () => {
+    return axios.get(`${API_BASE}/storeDataLinks`, { withCredentials: true });
+}
+

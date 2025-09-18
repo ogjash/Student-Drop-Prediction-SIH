@@ -1,8 +1,22 @@
 import { PredictionResult } from '../Models/PredictionResult.js';
-import { getCurrentBiweeklyPeriod } from '../cron/biweeklyPrediction.js';
 import { University } from '../Models/UniversitySchema.js';
 import axios from 'axios';
 import Papa from 'papaparse';
+
+function getCurrentBiweeklyPeriod(date = new Date()) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    let periodStart, periodEnd;
+    if (day <= 15) {
+    periodStart = new Date(year, month, 1);
+    periodEnd = new Date(year, month, 15, 23, 59, 59, 999);
+    } else {
+    periodStart = new Date(year, month, 16);
+    periodEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
+    }
+    return { periodStart, periodEnd };
+}
 
 // Format merged student data to strict field order and naming
 function formatStudentData(mergedArr) {

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import {FilterBar, RiskTable} from '../../components/index';
+import { useNavigate } from 'react-router-dom';
+import { FilterBar, RiskTable } from '../../components/index';
 import { mockStudents } from '../../data/mockData';
 
-const Students = ({ onViewStudent }) => {
+const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [classFilter, setClassFilter] = useState('');
   const [riskFilter, setRiskFilter] = useState('');
+  const navigate = useNavigate();
 
   const filteredStudents = mockStudents.filter((student) => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || student.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -13,6 +15,10 @@ const Students = ({ onViewStudent }) => {
     const matchesRisk = !riskFilter || student.riskLevel === riskFilter;
     return matchesSearch && matchesClass && matchesRisk;
   });
+
+  const handleViewStudent = (student) => {
+    navigate(`/dashboard/student/${student.id}`);
+  };
 
   return (
     <div className="space-y-6 w-full">
@@ -31,7 +37,7 @@ const Students = ({ onViewStudent }) => {
         onRiskFilterChange={setRiskFilter}
       />
       <div>
-        <RiskTable students={filteredStudents} onViewStudent={onViewStudent} />
+        <RiskTable students={filteredStudents} onViewStudent={handleViewStudent} />
       </div>
     </div>
   );
