@@ -1,18 +1,54 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilterBar, RiskTable } from '../../components/index';
-import { mockStudents } from '../../data/mockData';
+import { getAndStorePrediction } from '../../data/mockData';
+
 
 const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [classFilter, setClassFilter] = useState('');
   const [riskFilter, setRiskFilter] = useState('');
+  const [students, setStudents] = useState([]);
+  const [dropoutRates, setDropoutRates] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const filteredStudents = mockStudents.filter((student) => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesClass = !classFilter || student.class === classFilter;
-    const matchesRisk = !riskFilter || student.riskLevel === riskFilter;
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await getAndStorePrediction();
+        setStudents(data.students || []);
+        setDropoutRates(data.dropoutRate || []);
+      } catch (error) {
+        setStudents([]);
+        setDropoutRates([]);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+
+  const getRiskLevel = (dropoutRate) => {
+    if (dropoutRate >= 60) return 'high';
+    if (dropoutRate >= 30) return 'medium';
+    return 'low';
+  };
+
+  const studentsWithRisk = students.map((student, idx) => {
+    const rate = Array.isArray(dropoutRates) ? dropoutRates[idx] : student.dropoutRate;
+    return {
+      ...student,
+      riskLevel: getRiskLevel(rate)
+    };
+  });
+
+  const filteredStudents = studentsWithRisk.filter((student) => {
+    const matchesSearch = student.name?.toLowerCase().includes(searchTerm.toLowerCase()) || student.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesClass = !classFilter || student.department === classFilter;
+    const matchesRisk = !riskFilter || riskFilter === 'all' || student.riskLevel === riskFilter;
     return matchesSearch && matchesClass && matchesRisk;
   });
 
@@ -25,7 +61,7 @@ const Students = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Students</h2>
         <p className="text-sm text-gray-500 mt-1 md:mt-0">
-          {filteredStudents.length} of {mockStudents.length} students
+          {loading ? 'Loading...' : `${filteredStudents.length} of ${students.length} students`}
         </p>
       </div>
       <FilterBar
@@ -37,7 +73,7 @@ const Students = () => {
         onRiskFilterChange={setRiskFilter}
       />
       <div>
-        <RiskTable students={filteredStudents} onViewStudent={handleViewStudent} />
+  <RiskTable students={filteredStudents} onViewStudent={handleViewStudent} dropoutRates={dropoutRates} />
       </div>
     </div>
   );

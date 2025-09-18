@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { Search } from 'lucide-react';
+import { departments } from '../../../data/mockData';
 
 const FilterBar = ({ 
   searchTerm, 
@@ -30,11 +32,10 @@ const FilterBar = ({
             onChange={(e) => onClassFilterChange(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">All Classes</option>
-            <option value="10A">10A</option>
-            <option value="10B">10B</option>
-            <option value="11A">11A</option>
-            <option value="11B">11B</option>
+            <option value="">All Departments</option>
+            {departments.map((dept) => (
+              <option key={dept.id} value={dept.name}>{dept.name}</option>
+            ))}
           </select>
           <select
             value={riskFilter}

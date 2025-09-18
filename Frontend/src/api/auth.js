@@ -8,7 +8,7 @@ export const registerUniversity = async (data) => {
     return axios.post(`${API_BASE}/registerUniversity`, data, { withCredentials: true });
 };
 export const login = async (data) => {
-    console.log(API_BASE);
+    
     return axios.post(`${API_BASE}/login`, data, { withCredentials: true });
 };
 

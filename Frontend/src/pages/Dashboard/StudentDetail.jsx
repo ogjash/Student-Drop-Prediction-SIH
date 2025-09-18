@@ -2,13 +2,53 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, User, AlertTriangle, TrendingDown, DollarSign } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { mockStudents } from '../../data/mockData';
+import { getAndStorePrediction } from '../../data/mockData';
+import { useEffect, useState } from 'react';
+
+
+const getAvgTestScore = (student) => {
+  const t1 = typeof student.test_score_1 === 'number' ? student.test_score_1 : 0;
+  const t2 = typeof student.test_score_2 === 'number' ? student.test_score_2 : 0;
+  const t3 = typeof student.test_score_3 === 'number' ? student.test_score_3 : 0;
+  return ((t1 + t2 + t3) / 3).toFixed(2);
+};
 
 const StudentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const student = mockStudents.find(s => String(s.id) === String(id));
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dropoutRates, setDropoutRates] = useState([]);
 
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getAndStorePrediction();
+        setStudents(data.students || []);
+        setDropoutRates(data.dropoutRate || []);
+      } catch (e) {
+        setStudents([]);
+        setDropoutRates([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudents();
+  }, []);
+
+  // Find student and their index in the students array
+  const studentIndex = students.findIndex(s => String(s.student_id || s.id) === String(id));
+  const student = students[studentIndex];
+
+  // Get dropout rate for this student using the index
+  const studentDropoutRate =
+    studentIndex !== -1 && dropoutRates && dropoutRates.length > studentIndex
+      ? dropoutRates[studentIndex]
+      : null;
+
+  if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
   if (!student) {
     return (
       <div className="space-y-6 w-full">
@@ -21,56 +61,61 @@ const StudentDetail = () => {
       </div>
     );
   }
-  const attendanceData = student.attendanceHistory.map((entry, index) => ({
-    day: `Day ${index + 1}`,
-    present: entry.present ? 1 : 0,
-    date: entry.date,
-  }));
-  const scoreData = student.scoreHistory.map((entry) => ({
-    subject: entry.subject,
-    score: entry.score,
-    date: entry.date,
-  }));
+  
+  const now = new Date();
+  const testScores = [
+    { label: 'Test 1', score: student.test_score_1 },
+    { label: 'Test 2', score: student.test_score_2 },
+    { label: 'Test 3', score: student.test_score_3 },
+  ];
+  const scoreData = testScores.map((t, i) => {
+    const date = new Date(now.getTime() - 10 * (i + 1) * 24 * 60 * 60 * 1000);
+    return {
+      subject: t.label,
+      score: t.score,
+      date: date.toISOString().slice(0, 10),
+    };
+  });
   const getRiskFactors = () => {
     const factors = [];
-    if (student.attendance < 80) {
+    if (student.attendance_percentage < 70) {
       factors.push({
         icon: AlertTriangle,
         text: 'Low Attendance',
-        description: `Current attendance: ${student.attendance}%`,
+        description: `Current attendance: ${student.attendance_percentage}%`,
         severity: 'warning',
       });
     }
-    if (student.testScore < 60) {
+    if (getAvgTestScore(student) < 60) {
       factors.push({
         icon: TrendingDown,
         text: 'Declining Test Scores',
-        description: `Current average: ${student.testScore}%`,
+        description: `Current average: ${getAvgTestScore(student)}%`,
         severity: 'high',
       });
     }
-    if (student.feeStatus !== 'paid') {
+    if (student.Pending_Fees === 1) {
       factors.push({
         icon: DollarSign,
         text: 'Fee Issues',
-        description: `Status: ${student.feeStatus}`,
-        severity: student.feeStatus === 'overdue' ? 'high' : 'medium',
+        description: 'Status: Pending',
+        severity: student.Pending_Fees === 1 ? 'medium' : 'low',
       });
     }
     return factors;
   };
   const getSuggestions = () => {
     const suggestions = [];
-    if (student.attendance < 80) {
+    if (student.attendance_percentage < 80) {
       suggestions.push('Schedule a meeting with the student and guardian to discuss attendance issues');
     }
-    if (student.testScore < 60) {
+    if (getAvgTestScore(student) < 60) {
       suggestions.push('Recommend additional tutoring or study support');
     }
-    if (student.feeStatus !== 'paid') {
+    if (student.Pending_Fees === 1) {
       suggestions.push('Contact guardian regarding fee payment and available assistance programs');
     }
-    if (student.riskLevel === 'high') {
+    if (studentDropoutRate >= 30) {
       suggestions.push('Consider intensive intervention program and weekly check-ins');
     }
     return suggestions;
@@ -87,29 +132,17 @@ const StudentDetail = () => {
               <User className="h-6 w-6 mr-2 text-blue-600" />
               {student.name}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Class: {student.class}</p>
+            <p className="text-sm text-gray-500 mt-1">Class: {student.department}</p>
             <p className="text-sm text-gray-500">Email: <Mail className="inline h-4 w-4 mr-1" />{student.email}</p>
             <p className="text-sm text-gray-500">Phone: <Phone className="inline h-4 w-4 mr-1" />{student.phone}</p>
-            <p className="text-sm text-gray-500">Guardian: {student.guardian} ({student.guardianPhone})</p>
-            <p className="text-sm text-gray-500">Last Login: {student.lastLogin}</p>
+            <p className="text-sm text-gray-500">Last Login: {student.year}</p>
+            {studentDropoutRate !== null && (
+              <p className="text-sm text-gray-500 font-semibold mt-2">Dropout Rate: <span className="text-red-600">{studentDropoutRate.toFixed(2)}%</span></p>
+            )}
           </div>
         </div>
       </div>
-      {/* Attendance Chart */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Attendance History</h3>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={attendanceData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="day" stroke="#6b7280" fontSize={12} tick={{ fill: '#6b7280' }} />
-              <YAxis stroke="#6b7280" fontSize={12} tick={{ fill: '#6b7280' }} />
-              <Tooltip />
-              <Bar dataKey="present" fill="#3b82f6" name="Present" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+
       {/* Score Chart */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 overflow-x-auto">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Test Score History</h3>

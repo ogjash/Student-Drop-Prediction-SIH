@@ -1,7 +1,16 @@
-import React from 'react';
 import { Eye } from 'lucide-react';
+import { departments } from '../../../data/mockData';
 
-const RiskTable = ({ students, onViewStudent }) => {
+const getAvgTestScore = (student) => {
+  const t1 = typeof student.test_score_1 === 'number' ? student.test_score_1 : 0;
+  const t2 = typeof student.test_score_2 === 'number' ? student.test_score_2 : 0;
+  const t3 = typeof student.test_score_3 === 'number' ? student.test_score_3 : 0;
+  return ((t1 + t2 + t3) / 3).toFixed(2);
+};
+
+// Accept dropoutRates as a prop
+const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
+  
   const getRiskColor = (level) => {
     switch (level) {
       case 'high':
@@ -31,28 +40,48 @@ const RiskTable = ({ students, onViewStudent }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {students.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
+            {students.map((student, idx) => {
+              // Get dropoutRate from dropoutRates prop if available, else fallback to student.dropoutRate
+              const dropoutRate =
+                Array.isArray(dropoutRates) && dropoutRates.length > idx
+                  ? dropoutRates[idx]
+                  : student.dropoutRate;
+              return (
+              <tr key={student.student_id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {student.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {student.class}
+                  {
+                    (() => {
+                      const dept = departments.find(
+                        (d) => d.name === student.department
+                      );
+                      return dept ? dept.code : student.department;
+                    })()
+                  }
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {student.attendance}%
+                  {student.attendance_percentage}%
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {student.testScore}%
+                  {getAvgTestScore(student)}%
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRiskColor(
-                      student.riskLevel
-                    )}`}
-                  >
-                    {student.riskLevel}
-                  </span>
+                  {(() => {
+                    let riskLevel = 'safe';
+                    if (typeof dropoutRate === 'number') {
+                      if (dropoutRate < 40) riskLevel = 'high';
+                      else if (dropoutRate < 70) riskLevel = 'medium';
+                    }
+                    return (
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRiskColor(riskLevel)}`}
+                      >
+                        {riskLevel}
+                      </span>
+                    );
+                  })()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
@@ -64,7 +93,8 @@ const RiskTable = ({ students, onViewStudent }) => {
                   </button>
                 </td>
               </tr>
-            ))}
+            );
+            })}
           </tbody>
         </table>
       </div>
