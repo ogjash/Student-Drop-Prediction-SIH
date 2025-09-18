@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import { DotBackground, Button, TabsDemo, DarkButton, LightButton, Badge, Card, CardContent, TextHighlight } from '../components/index.js'
+import { DotBackground, MovingButton, TabsDemo, DarkButton, LightButton, Badge, Card, CardContent, TextHighlight } from '../components/index.js'
 import { motion } from "framer-motion"
 import {
   BadgeMinus,
@@ -132,12 +132,12 @@ const Home = () => {
   return (
     <div className="hero min-h-screen bg-[#fff] flex flex-col items-center w-full max-w-full overflow-x-hidden">
       <div className="text-center pt-16 md:pt-32 px-4 md:px-0 w-full max-w-full">
-          <Button
+          <MovingButton
             borderRadius="1.75rem"
             className="mb-4 rounded-full px-4 py-1.5 bg-white text-black border-neutral-200"
           >
             SIH Prototype
-          </Button>
+          </MovingButton>
 
         <h1 className="text-3xl md:text-5xl font-bold text-[#1c1d1f] mb-4">
           Smarter Insights <br className="md:block hidden" /> Stronger Support.

@@ -1,15 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Sidebar, SidebarBody, SidebarLink } from '../../components/ui/Sidebar.jsx'
+import { verify } from '../../api/auth.js'
 import { 
   IconBrandTabler,
   IconUsers,
   IconSettings,
-  IconArrowLeft,
+  IconLogout,
   IconReportAnalytics,
   IconBell,
-  IconUserPlus
+  IconUserPlus,
+  IconPin,
+  IconPinFilled
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -19,15 +22,46 @@ const DashboardLayout = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [animate, setAnimate] = useState(true);
+
+  // Fetch user information on component mount
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await verify();
+        if (response.data && response.data.user) {
+          setUserInfo(response.data.user);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        navigate('/auth/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchUserInfo();
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Manage sidebar open state when pinned/unpinned
+  useEffect(() => {
+    if (!animate) {
+      // When pinned, force sidebar to be open
+      setOpen(true);
+    }
+  }, [animate]);
 
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
 
   const handleLogout = () => {
-    // Clear any authentication data here (localStorage, sessionStorage, etc.)
-    // localStorage.removeItem('authToken'); // Uncomment when you have auth implementation
-    // sessionStorage.clear(); // Uncomment if using session storage
+    localStorage.removeItem('authToken');
+    sessionStorage.clear();
     
     // Redirect to home page
     navigate('/', { replace: true });
@@ -64,12 +98,6 @@ const DashboardLayout = () => {
       href: "/dashboard/settings",
       icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
     },
-    {
-      label: "Logout",
-      href: "#",
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-      onClick: handleLogout
-    },
   ];
 
   return (
@@ -77,54 +105,108 @@ const DashboardLayout = () => {
       "mx-auto flex w-full flex-1 flex-col rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
       "min-h-screen"
     )}>
-      <Sidebar open={open} setOpen={setOpen}>
+      <Sidebar open={open} setOpen={setOpen} animate={animate}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            {open ? <Logo /> : <LogoIcon />}
+            {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
             <div className="mt-10 flex flex-col gap-2">
               {sidebarLinks.map((link, idx) => (
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
-            <div className="w-screen mt-20">
-              <SidebarLink
-                link={{
-                  label: "Admin User",
-                  href: "#",
-                  icon: (
-                    <div className="h-7 w-7 shrink-0 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-bold">
-                      A
-                    </div>
-                  ),
-                }}
-              />
+          </div>
+          
+          {/* Username section */}
+          <div className="w-full">
+            <div className="flex items-center justify-between rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="h-7 w-7 shrink-0 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-bold">
+                  {loading ? "..." : (userInfo?.username?.[0]?.toUpperCase() || userInfo?.name?.[0]?.toUpperCase() || "A")}
+                </div>
+                {(open || !animate) && (
+                  <span className="text-sm text-neutral-700 dark:text-neutral-200 truncate">
+                    {loading ? "Loading..." : (userInfo?.username || userInfo?.name || "Admin User")}
+                  </span>
+                )}
+              </div>
+              {(open || !animate) && (
+                <button
+                  onClick={handleLogout}
+                  className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shrink-0"
+                  title="Logout"
+                >
+                  <IconLogout className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+                </button>
+              )}
             </div>
           </div>
         </SidebarBody>
       </Sidebar>
       <div className={cn(
-        "ml-0 md:ml-[300px] flex-1 transition-all duration-300",
-        open ? "md:ml-[300px]" : "md:ml-[60px]"
+        "flex-1 transition-all duration-300",
+        // When animate is true (unpinned): responsive sidebar behavior
+        animate ? (
+          open ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[60px]"
+        ) : (
+          // When animate is false (pinned): always show full sidebar
+          "ml-0 md:ml-[300px]"
+        )
       )}>
-        <DashboardContent />
+        <DashboardContent animate={animate} open={open} />
       </div>
     </div>
   )
 }
 
-const Logo = () => {
+const Logo = ({ animate, setAnimate }) => {
+  const togglePin = () => {
+    setAnimate(!animate);
+  };
+
   return (
-    <Link
-      to="/dashboard"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium whitespace-pre text-black dark:text-white">
-        ImpactCrew
-      </motion.span>
-    </Link>
+    <motion.div 
+      className="relative z-20 flex items-center justify-between py-1 text-sm font-normal text-black"
+      animate={{
+        backgroundColor: animate ? "transparent" : "rgba(0,0,0,0.05)",
+        transition: { duration: 0.3 }
+      }}
+    >
+      <Link
+        to="/dashboard"
+        className="flex items-center space-x-2">
+        <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="font-medium whitespace-pre text-black dark:text-white">
+          ImpactCrew
+        </motion.span>
+      </Link>
+      <motion.button
+        onClick={togglePin}
+        className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+        title={animate ? "Pin sidebar" : "Unpin sidebar"}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        animate={{
+          backgroundColor: animate ? "transparent" : "rgba(59, 130, 246, 0.1)",
+          transition: { duration: 0.2 }
+        }}
+      >
+        <motion.div
+          animate={{ 
+            rotate: animate ? 0 : 45,
+            transition: { duration: 0.3 }
+          }}
+        >
+          {animate ? (
+            <IconPin className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+          ) : (
+            <IconPinFilled className="h-4 w-4 text-gray-800 dark:text-gray-500" />
+          )}
+        </motion.div>
+      </motion.button>
+    </motion.div>
   );
 };
 
@@ -138,13 +220,46 @@ const LogoIcon = () => {
   );
 };
 
-const DashboardContent = () => {
+const DashboardContent = ({ animate, open }) => {
   return (
-    <div className="flex flex-1">
-      <div className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
-        <Outlet />
-      </div>
-    </div>
+    <motion.div 
+      className="flex flex-1"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ 
+        opacity: 1, 
+        x: 0,
+        transition: {
+          duration: animate ? 0.3 : 0.5,
+          ease: "easeInOut"
+        }
+      }}
+      key={animate ? 'animated' : 'pinned'} // Force re-animation when pin state changes
+    >
+      <motion.div 
+        className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900"
+        animate={{
+          scale: animate ? (open ? 1 : 1.02) : 1,
+          transition: {
+            duration: 0.2,
+            ease: "easeInOut"
+          }
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0,
+            transition: {
+              duration: 0.4,
+              delay: animate ? 0.1 : 0.2
+            }
+          }}
+        >
+          <Outlet />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

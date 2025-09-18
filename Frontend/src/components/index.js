@@ -6,7 +6,7 @@ import { Card, CardContent } from "./ui/card.jsx";
 import DarkButton from "./ui/DarkButton.jsx";
 import LightButton from "./ui/LightButton.jsx";
 import { DotBackground } from "./ui/DotBackground.jsx";
-import { Button } from "./ui/MovingBorder.jsx";
+import { MovingButton } from "./ui/MovingBorder.jsx";
 import { Sidebar } from "./ui/Sidebar.jsx";
 import { Tabs } from "./ui/Tabs.jsx";
 import { TabsDemo } from "./ui/TabsDemo.jsx";
@@ -21,7 +21,7 @@ export {
     Footer,
     BackgroundRippleEffect,
     Badge,
-    Button,
+    MovingButton,
     Card,
     CardContent,
     DarkButton,

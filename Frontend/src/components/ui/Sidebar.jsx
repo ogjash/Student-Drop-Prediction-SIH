@@ -61,6 +61,19 @@ export const DesktopSidebar = ({
   ...props
 }) => {
   const { open, setOpen, animate } = useSidebar();
+  
+  const handleMouseEnter = () => {
+    if (animate) {
+      setOpen(true);
+    }
+  };
+  
+  const handleMouseLeave = () => {
+    if (animate) {
+      setOpen(false);
+    }
+  };
+  
   return (
     <>
       <motion.div
@@ -71,8 +84,8 @@ export const DesktopSidebar = ({
         animate={{
           width: animate ? (open ? "300px" : "60px") : "300px",
         }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         {...props}>
         {children}
       </motion.div>

@@ -1,40 +1,134 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Brain, Database, Users, Shield, Star, Zap } from 'lucide-react'
 
 const Footer = () => {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-black border-t border-gray-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div className="col-span-1 lg:col-span-2">
             <h3 className="text-white font-semibold text-xl mb-4">ImpactCrew</h3>
-            <p className="text-gray-300 max-w-md">
-              Empowering universities with AI-driven insights to prevent student dropouts and enhance academic success.
+            <p className="text-gray-300 max-w-md mb-6">
+              ML-powered early warning system helping educators act early to reduce dropout rates in government colleges through unified data insights.
             </p>
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <Brain className="h-4 w-4" />
+              <span>SIH 2025 Prototype</span>
+            </div>
           </div>
-          
+
+          {/* Features */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4">Features</h4>
             <ul className="space-y-2">
-              <li><Link to="/dashboard" className="text-gray-400 hover:text-gray-900">Dashboard</Link></li>
-              <li><Link to="/analysis" className="text-gray-400 hover:text-gray-900">Analysis</Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-gray-900">Contact</Link></li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <Database className="h-3 w-3" />
+                  Data Integration
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <Brain className="h-3 w-3" />
+                  AI Prediction
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <Shield className="h-3 w-3" />
+                  Smart Alerts
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-gray-400 hover:text-white transition-colors flex items-center gap-2"
+                >
+                  <Users className="h-3 w-3" />
+                  Department Access
+                </button>
+              </li>
             </ul>
           </div>
 
+          {/* Learn More */}
           <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
-            <ul className="space-y-2 text-gray-600">
-              <li>Email: info@impactcrew.ai</li>
-              <li>Phone: 99******99</li>
+            <h4 className="text-white font-semibold mb-4">Learn More</h4>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => scrollToSection('problem')} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Problem Statement
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('solution')} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Our Solution
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('quote')} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Vision
+                </button>
+              </li>
+              <li><Link to="/auth/login" className="text-gray-400 hover:text-white transition-colors">Get Started</Link></li>
             </ul>
           </div>
         </div>
         
-        <div className="border-t border-gray-500 mt-8 pt-8 text-center text-gray-600">
-          <p>© {new Date().getFullYear()} ImpactCrew. All rights reserved.</p>
+        {/* Bottom Section */}
+        <div className="border-t border-gray-800 mt-12 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-gray-400 text-sm">
+              <p>© {new Date().getFullYear()} ImpactCrew. Built for SIH 2025.</p>
+            </div>
+            <div className="flex items-center gap-6 text-sm">
+              <button 
+                onClick={() => scrollToSection('problem')} 
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Why This Matters
+              </button>
+              <span className="text-gray-600">•</span>
+              <button 
+                onClick={() => scrollToSection('solution')} 
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                How It Works
+              </button>
+              <span className="text-gray-600">•</span>
+              <Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors">
+                View Demo
+              </Link>
+            </div>
+          </div>
         </div>
-
       </div>
     </footer>
   )
