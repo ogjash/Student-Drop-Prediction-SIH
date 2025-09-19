@@ -1,24 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
-const getStudentSeverity = (student, dropoutRate) => {
-  if (!student) return 'low';
-  // High severity: dropoutRate >= 60, attendance < 70, avg test score < 60, or Pending_Fees === 1
-  if (typeof dropoutRate === 'number' && dropoutRate >= 60) return 'high';
-  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 70) return 'high';
-  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
-    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
-    if (avgScore < 60) return 'high';
-  }
-  if (student.Pending_Fees === 1) return 'medium';
-  // Medium severity: dropoutRate >= 30, attendance < 80, avg test score < 70
-  if (typeof dropoutRate === 'number' && dropoutRate >= 30) return 'medium';
-  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 80) return 'medium';
-  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
-    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
-    if (avgScore < 70) return 'medium';
-  }
-  return 'low';
-};
 import { AlertTriangle, Clock, CheckCircle, Send, Eye } from 'lucide-react';
 import { getAndStorePrediction } from '../../data/mockData';
 
@@ -26,6 +6,7 @@ const Alerts = () => {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [students, setStudents] = useState([]);
   const [dropoutRates, setDropoutRates] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
       const fetchStats = async () => {
@@ -46,10 +27,27 @@ const Alerts = () => {
       fetchStats();
     }, []);
 
-  const getStudent = (studentId) => {
-    return mockStudents.find(s => s.id === studentId);
-  };
 
+  
+  const getStudentSeverity = (student, dropoutRate) => {
+  if (!student) return 'low';
+  // High severity: dropoutRate >= 60, attendance < 70, avg test score < 60, or Pending_Fees === 1
+  if (typeof dropoutRate === 'number' && dropoutRate >= 60) return 'high';
+  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 70) return 'high';
+  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
+    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
+    if (avgScore < 60) return 'high';
+  }
+  if (student.Pending_Fees === 1) return 'medium';
+  // Medium severity: dropoutRate >= 30, attendance < 80, avg test score < 70
+  if (typeof dropoutRate === 'number' && dropoutRate >= 30) return 'medium';
+  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 80) return 'medium';
+  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
+    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
+    if (avgScore < 70) return 'medium';
+  }
+  return 'low';
+  };
   const getSeverityColor = (severity) => {
     switch (severity) {
       case 'high':
@@ -86,7 +84,6 @@ const Alerts = () => {
     alert('Notification sent to mentor and guardian!');
   };
 
-  // Generate alerts from students data
   const generatedAlerts = students.map((student, idx) => {
     const dropoutRate = Array.isArray(dropoutRates) && dropoutRates.length > idx ? dropoutRates[idx] : student.dropoutRate;
     const severity = getStudentSeverity(student, dropoutRate);
