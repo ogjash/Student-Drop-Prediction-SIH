@@ -22,7 +22,7 @@ const Reports = () => {
       const students = data.mergedData || [];
       const dropoutRate = data.dropoutRate || [];
       const totalStudents = students.length;
-      const atRiskStudents = students.filter(s => s.dropoutRate >= 30).length;
+      const atRiskStudents = students.filter(s => s.dropoutRate >= 70).length;
 
       // Calculate averageAttendance
       const averageAttendance = students.length

@@ -57,7 +57,7 @@ const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
                       const dept = departments.find(
                         (d) => d.name === student.department
                       );
-                      return dept ? dept.code : student.department;
+                      return dept ? student.class : dept.code;
                     })()
                   }
                 </td>
@@ -71,8 +71,8 @@ const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
                   {(() => {
                     let riskLevel = 'safe';
                     if (typeof dropoutRate === 'number') {
-                      if (dropoutRate < 40) riskLevel = 'high';
-                      else if (dropoutRate < 70) riskLevel = 'medium';
+                      if (dropoutRate > 70) riskLevel = 'high';
+                      else if (dropoutRate > 40) riskLevel = 'medium';
                     }
                     return (
                       <span
