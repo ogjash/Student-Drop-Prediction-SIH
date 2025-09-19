@@ -17,8 +17,10 @@ const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
         return 'bg-red-100 text-red-800';
       case 'medium':
         return 'bg-yellow-100 text-yellow-800';
-      default:
+      case 'low':
         return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -69,10 +71,13 @@ const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {(() => {
-                    let riskLevel = 'safe';
-                    if (typeof dropoutRate === 'number') {
-                      if (dropoutRate > 70) riskLevel = 'high';
-                      else if (dropoutRate > 40) riskLevel = 'medium';
+                    let riskLevel = student.riskLevel;
+                    if (!riskLevel) {
+                      riskLevel = 'low';
+                      if (typeof dropoutRate === 'number') {
+                        if (dropoutRate > 70) riskLevel = 'high';
+                        else if (dropoutRate < 70 && dropoutRate > 40) riskLevel = 'medium';
+                      }
                     }
                     return (
                       <span

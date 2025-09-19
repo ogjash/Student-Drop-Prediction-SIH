@@ -38,7 +38,7 @@ const Overview = () => {
   
 
   return (
-  <div className="w-full h-screen flex items-center justify-center">
+  <div className="space-y-6 w-full">
       {loading ? (
         <div>Loading...</div>
       ) : stats ? (
@@ -48,32 +48,28 @@ const Overview = () => {
             <StatsCard
               title="Total Students"
               value={stats.totalStudents.toString()}
-              change="+12 this month"
-              changeType="positive"
+             
               icon={Users}
               color="blue"
             />
             <StatsCard
               title="At-Risk Students"
               value={stats.atRiskStudents.toString()}
-              change="-3 from last week"
-              changeType="positive"
+             
               icon={AlertTriangle}
               color="red"
             />
             <StatsCard
               title="Average Attendance"
               value={`${stats.averageAttendance}%`}
-              change="+2.3% this month"
-              changeType="positive"
+              
               icon={BookOpen}
               color="green"
             />
             <StatsCard
               title="Average Test Score"
               value={`${stats.averageTestScore}%`}
-              change="+1.8% this month"
-              changeType="positive"
+             
               icon={TrendingUp}
               color="purple"
             />

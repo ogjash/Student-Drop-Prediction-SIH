@@ -14,9 +14,6 @@ const StatsCard = ({ title, value, change, changeType, icon: Icon, color }) => {
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
-          <p className={`text-sm ${changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
-            {change}
-          </p>
         </div>
         <div className={`p-3 rounded-full ${colorClasses[color]}`}>
           <Icon className="h-6 w-6" />

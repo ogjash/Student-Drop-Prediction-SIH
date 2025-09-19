@@ -32,25 +32,34 @@ const Students = () => {
 
 
   const getRiskLevel = (dropoutRate) => {
-    if (dropoutRate >= 60) return 'high';
-    if (dropoutRate >= 30) return 'medium';
+    if (typeof dropoutRate === 'number') {
+      if (dropoutRate > 70) return 'high';
+      if (dropoutRate > 40) return 'medium';
+    }
     return 'low';
   };
 
   const studentsWithRisk = students.map((student, idx) => {
     const rate = Array.isArray(dropoutRates) ? dropoutRates[idx] : student.dropoutRate;
+    const riskLevel = getRiskLevel(rate);
     return {
       ...student,
-      riskLevel: getRiskLevel(rate)
+      riskLevel
     };
   });
+
+  // Debug: log risk levels and filters
+  console.log('studentsWithRisk', studentsWithRisk);
+  console.log('riskFilter', riskFilter);
 
   const filteredStudents = studentsWithRisk.filter((student) => {
     const matchesSearch = student.name?.toLowerCase().includes(searchTerm.toLowerCase()) || student.email?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClass = !classFilter || student.department === classFilter;
-    const matchesRisk = !riskFilter || riskFilter === 'all' || student.riskLevel === riskFilter;
+    const matchesRisk = !riskFilter || (student.riskLevel && student.riskLevel === riskFilter);
     return matchesSearch && matchesClass && matchesRisk;
   });
+  // Debug: log filtered students
+  console.log('filteredStudents', filteredStudents);
 
   const handleViewStudent = (student) => {
     navigate(`/dashboard/student/${student.id}`);
