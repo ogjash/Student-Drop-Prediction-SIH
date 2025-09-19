@@ -135,7 +135,7 @@ const StudentDetail = () => {
             <p className="text-sm text-gray-500 mt-1">Class: {student.department}</p>
             <p className="text-sm text-gray-500">Email: <Mail className="inline h-4 w-4 mr-1" />{student.email}</p>
             <p className="text-sm text-gray-500">Phone: <Phone className="inline h-4 w-4 mr-1" />{student.phone}</p>
-            <p className="text-sm text-gray-500">Last Login: {student.year}</p>
+            <p className="text-sm text-gray-500">Year: {student.year}</p>
             {studentDropoutRate !== null && (
               <p className="text-sm text-gray-500 font-semibold mt-2">Dropout Rate: <span className="text-red-600">{studentDropoutRate.toFixed(2)}%</span></p>
             )}

@@ -16,6 +16,7 @@ const AddUser = () => {
   const [attendanceLink, setAttendanceLink] = useState('');
   const [feesLink, setFeesLink] = useState('');
   const [marksheetLink, setMarksheetLink] = useState('');
+  const [studentDetailsLink, setStudentDetailsLink] = useState('');
   const [showAddAdminForm, setShowAddAdminForm] = useState(false);
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +35,7 @@ const AddUser = () => {
   const attendanceFileRef = useRef();
   const feesFileRef = useRef();
   const marksheetFileRef = useRef();
+  const studentDetailsFileRef = useRef();
 
   useEffect(() => {
     fetchUsers();
@@ -74,7 +76,7 @@ const AddUser = () => {
     try {
       await registerUser({
         username: formData.username,
-        domain: formData.email.split('@')[1], // domain from email
+        domain: formData.email.split('@')[1], 
         password: formData.password,
         contactNumber: formData.contactNumber,
         // department: formData.department, // uncomment if backend expects department
@@ -84,7 +86,7 @@ const AddUser = () => {
       await fetchUsers();
       setFormData({ username: '', contactNumber: '', email: '', department: '', password: '' });
       setShowAddAdminForm(false);
-      alert(`Password sent to ${formData.email}`); // Fixed: Added backticks
+  alert(`Password sent to ${formData.email}`);
     } catch (err) {
       alert(err?.response?.data?.message || 'Failed to add user');
     }
@@ -106,7 +108,7 @@ const AddUser = () => {
   };
 
   const handleUploadLinks = async () => {
-    if (!attendanceLink || !feesLink || !marksheetLink) {
+    if (!attendanceLink || !feesLink || !marksheetLink || !studentDetailsLink) {
       alert('Please fill in all Google Sheets links before uploading');
       return;
     }
@@ -115,7 +117,8 @@ const AddUser = () => {
       await sendfile({
         attendanceLink,
         feesLink,
-        marksheetLink
+        marksheetLink,
+        studentDetailsLink
       });
       alert('Google Sheets links uploaded successfully!');
     } catch (err) {
@@ -126,7 +129,7 @@ const AddUser = () => {
   // File input handlers (demo only)
   const handleFileChange = (e, label) => {
     if (e.target.files.length > 0) {
-      alert(`Selected file for ${label}: ${e.target.files[0].name}`); // Fixed: Added backticks
+      alert(`Selected file for ${label}: ${e.target.files[0].name}`);
     }
   };
 
@@ -137,16 +140,14 @@ const AddUser = () => {
         <h2 className="text-lg font-medium text-gray-900 mb-6">
           Upload or Link Google Sheets for Attendance, Fees, and Marksheet
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 overflow-x-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 overflow-x-auto">
           {/* Attendance Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-gray-700 w-full text-center">
                 Attendance Google Sheet link
               </label>
-              <button type="button" onClick={() => attendanceFileRef.current.click()}>
-                <Upload className="w-4 h-4 text-gray-400" />
-              </button>
+              
               <input
                 type="file"
                 accept=".csv,.xlsx,.xls"
@@ -166,12 +167,10 @@ const AddUser = () => {
           {/* Fees Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-gray-700 w-full text-center">
                 Fees Google Sheet link
               </label>
-              <button type="button" onClick={() => feesFileRef.current.click()}>
-                <Upload className="w-4 h-4 text-gray-400" />
-              </button>
+              
               <input
                 type="file"
                 accept=".csv,.xlsx,.xls"
@@ -191,12 +190,10 @@ const AddUser = () => {
           {/* Marksheet Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-gray-700 w-full text-center">
                 Marksheet Google Sheet link
               </label>
-              <button type="button" onClick={() => marksheetFileRef.current.click()}>
-                <Upload className="w-4 h-4 text-gray-400" />
-              </button>
+              
               <input
                 type="file"
                 accept=".csv,.xlsx,.xls"
@@ -213,9 +210,37 @@ const AddUser = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
-        </div>
+          {/* Student Details Link Only */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-medium text-gray-700 w-full text-center">
+                Student Detail Google Sheet link
+              </label>
+              
+              <input
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                className="hidden"
+                ref={studentDetailsFileRef}
+                onChange={e => handleFileChange(e, 'Marksheet')}
+              />
+            </div>
+            <input
+              type="url"
+              value={studentDetailsLink}
+              onChange={(e) => setStudentDetailsLink(e.target.value)}
+              placeholder="Enter Google Sheets link"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            />
+          </div>
+          <div>
+          </div>
+          <div>
+          </div>
+          <div>
+          </div>
         {/* Upload Button below the links section */}
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 right-0">
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
@@ -224,10 +249,11 @@ const AddUser = () => {
             Upload
           </button>
         </div>
+        </div>
         {/* Add Admin Button */}
         <button 
           onClick={() => setShowAddAdminForm(true)}
-          className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2.5 rounded-lg font-medium transition-colors shadow-sm w-full sm:w-auto"
+          className="bg-blue-700 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm "
         >
           Add admin
         </button>
@@ -236,7 +262,7 @@ const AddUser = () => {
       {/* Add Admin Form Modal */}
       {showAddAdminForm && (
         <>
-          <div className="fixed inset-0 bg-[#c8c9d3] bg-opacity-30 backdrop-blur-sm z-40"></div>
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-40"></div>
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-x-auto">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-x-auto">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -436,7 +462,9 @@ const AddUser = () => {
           )}
         </div>
       </div>
-    </div>
+      </div>
+      
+   
   );
 };
 

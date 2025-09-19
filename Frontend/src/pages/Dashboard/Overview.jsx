@@ -20,8 +20,7 @@ const Overview = () => {
         setStats(data);
         setStudents(data.students || []);
         setDropoutRates(data.dropoutRate || []);
-      } catch (error) {
-        console.error('Failed to fetch prediction data:', error);
+      } catch (err) {
         setStats(null);
         setStudents([]);
         setDropoutRates([]);
@@ -39,7 +38,7 @@ const Overview = () => {
   
 
   return (
-    <div className="space-y-6 w-full">
+  <div className="w-full h-screen flex items-center justify-center">
       {loading ? (
         <div>Loading...</div>
       ) : stats ? (
@@ -86,7 +85,15 @@ const Overview = () => {
           </div>
         </>
       ) : (
-        <div>Error loading dashboard data.</div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="text-lg font-semibold text-gray-600">No data available.</div>
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            onClick={() => navigate('/dashboard/add-user')}
+          >
+            Upload Data
+          </button>
+        </div>
       )}
     </div>
   );
