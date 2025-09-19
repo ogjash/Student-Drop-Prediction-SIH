@@ -9,7 +9,7 @@ export function TabsDemo() {
       value: "overview",
       content: (
         <div
-          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-[#e1e5ec] to-[#ccced2]">
+          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300">
           <DummyContent />
         </div>
       ),
@@ -19,7 +19,7 @@ export function TabsDemo() {
       value: "students",
       content: (
         <div
-          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-[#e1e5ec] to-[#ccced2]">
+          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300">
           <DummyContent />
         </div>
       ),
@@ -29,7 +29,7 @@ export function TabsDemo() {
       value: "alerts",
       content: (
         <div
-          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-[#e1e5ec] to-[#ccced2]">
+          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300">
           <DummyContent />
         </div>
       ),
@@ -39,7 +39,7 @@ export function TabsDemo() {
       value: "reports",
       content: (
         <div
-          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-[#e1e5ec] to-[#ccced2]">
+          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300">
           <DummyContent />
         </div>
       ),
@@ -49,7 +49,7 @@ export function TabsDemo() {
       value: "admins",
       content: (
         <div
-          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-[#e1e5ec] to-[#ccced2]">
+          className="w-full overflow-hidden relative h-full rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300">
           <DummyContent />
         </div>
       ),

@@ -71,38 +71,38 @@ const DashboardLayout = () => {
     {
       label: "Overview",
       href: "/dashboard",
-      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-zinc-800 dark:text-zinc-200" />
     },
     {
       label: "Students",
       href: "/dashboard/students",
-      icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconUsers className="h-5 w-5 shrink-0 text-zinc-800 dark:text-zinc-200" />
     },
     {
       label: "Reports",
       href: "/dashboard/reports",
-      icon: <IconReportAnalytics className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconReportAnalytics className="h-5 w-5 shrink-0 text-zinc-800 dark:text-neutral-200" />
     },
     {
       label: "Alerts",
       href: "/dashboard/alerts",
-      icon: <IconBell className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconBell className="h-5 w-5 shrink-0 text-zinc-800 dark:text-neutral-200" />
     },
     {
       label: "Add User",
       href: "/dashboard/add-user",
-      icon: <IconUserPlus className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconUserPlus className="h-5 w-5 shrink-0 text-zinc-800 dark:text-neutral-200" />
     },
     {
       label: "Settings",
       href: "/dashboard/settings",
-      icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      icon: <IconSettings className="h-5 w-5 shrink-0 text-zinc-800 dark:text-neutral-200" />
     },
   ];
 
   return (
     <div className={cn(
-      "mx-auto flex w-full flex-1 flex-col rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+      "mx-auto flex w-full flex-1 flex-col rounded-md border border-zinc-300 bg-zinc-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
       "min-h-screen"
     )}>
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
@@ -118,13 +118,13 @@ const DashboardLayout = () => {
           
           {/* Username section */}
           <div className="w-full">
-            <div className="flex items-center justify-between rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+            <div className="flex items-center justify-between rounded-lg hover:bg-zinc-100 dark:hover:bg-neutral-800 transition-colors">
               <div className="flex items-center gap-2 min-w-0 flex-1">
-                <div className="h-7 w-7 shrink-0 rounded-full bg-gray-400 flex items-center justify-center text-white text-sm font-bold">
+                <div className="h-7 w-7 shrink-0 rounded-full bg-zinc-400 flex items-center justify-center text-zinc-50 text-sm font-bold">
                   {loading ? "..." : (userInfo?.username?.[0]?.toUpperCase() || userInfo?.name?.[0]?.toUpperCase() || "A")}
                 </div>
                 {(open || !animate) && (
-                  <span className="text-sm text-neutral-700 dark:text-neutral-200 truncate">
+                  <span className="text-sm text-zinc-500 dark:text-zinc-200 truncate">
                     {loading ? "Loading..." : (userInfo?.username || userInfo?.name || "Admin User")}
                   </span>
                 )}
@@ -132,10 +132,10 @@ const DashboardLayout = () => {
               {(open || !animate) && (
                 <button
                   onClick={handleLogout}
-                  className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shrink-0"
+                  className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
                   title="Logout"
                 >
-                  <IconLogout className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+                  <IconLogout className="h-5 w-5 text-zinc-600 dark:text-neutral-400" />
                 </button>
               )}
             </div>
@@ -165,7 +165,7 @@ const Logo = ({ animate, setAnimate }) => {
 
   return (
     <motion.div 
-      className="relative z-20 flex items-center justify-between py-1 text-sm font-normal text-black"
+      className="relative z-20 flex items-center justify-between py-1 text-sm font-normal text-zinc-800"
       animate={{
         backgroundColor: animate ? "transparent" : "rgba(0,0,0,0.05)",
         transition: { duration: 0.3 }
@@ -174,17 +174,17 @@ const Logo = ({ animate, setAnimate }) => {
       <Link
         to="/dashboard"
         className="flex items-center space-x-2">
-        <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+        <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-zinc-800 dark:bg-white" />
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="font-medium whitespace-pre text-black dark:text-white">
+          className="font-medium whitespace-pre text-zinc-800 dark:text-white">
           ImpactCrew
         </motion.span>
       </Link>
       <motion.button
         onClick={togglePin}
-        className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+        className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
         title={animate ? "Pin sidebar" : "Unpin sidebar"}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -200,9 +200,9 @@ const Logo = ({ animate, setAnimate }) => {
           }}
         >
           {animate ? (
-            <IconPin className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+            <IconPin className="h-4 w-4 text-zinc-600 dark:text-neutral-400" />
           ) : (
-            <IconPinFilled className="h-4 w-4 text-gray-800 dark:text-gray-500" />
+            <IconPinFilled className="h-4 w-4 text-zinc-800 dark:text-gray-500" />
           )}
         </motion.div>
       </motion.button>
@@ -214,8 +214,8 @@ const LogoIcon = () => {
   return (
     <Link
       to="/dashboard"
-      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-zinc-800">
+      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-zinc-800 dark:bg-white" />
     </Link>
   );
 };
@@ -236,7 +236,7 @@ const DashboardContent = ({ animate, open }) => {
       key={animate ? 'animated' : 'pinned'} // Force re-animation when pin state changes
     >
       <motion.div 
-        className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900"
+        className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-zinc-300 bg-zinc-50 p-2 md:p-10 dark:border-zinc-600 dark:bg-zinc-900"
         animate={{
           scale: animate ? (open ? 1 : 1.02) : 1,
           transition: {

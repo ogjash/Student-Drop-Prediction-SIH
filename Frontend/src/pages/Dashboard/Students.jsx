@@ -62,14 +62,14 @@ const Students = () => {
   console.log('filteredStudents', filteredStudents);
 
   const handleViewStudent = (student) => {
-    navigate(`/dashboard/student/${student.id}`);
+    navigate(`/dashboard/student/${student.student_id}`);
   };
 
   return (
     <div className="space-y-6 w-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Students</h2>
-        <p className="text-sm text-gray-500 mt-1 md:mt-0">
+        <h2 className="text-2xl font-bold text-zinc-800">Students</h2>
+        <p className="text-sm text-zinc-500 mt-1 md:mt-0">
           {loading ? 'Loading...' : `${filteredStudents.length} of ${students.length} students`}
         </p>
       </div>
@@ -82,7 +82,7 @@ const Students = () => {
         onRiskFilterChange={setRiskFilter}
       />
       <div>
-  <RiskTable students={filteredStudents} onViewStudent={handleViewStudent} dropoutRates={dropoutRates} />
+        <RiskTable students={filteredStudents} onViewStudent={handleViewStudent} dropoutRates={dropoutRates} />
       </div>
     </div>
   );

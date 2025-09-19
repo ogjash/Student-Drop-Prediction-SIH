@@ -78,7 +78,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "fixed left-0 top-0 h-screen px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] shrink-0 z-50",
+          "fixed left-0 top-0 h-screen px-4 py-4 hidden md:flex md:flex-col bg-zinc-100 dark:bg-zinc-800 w-[300px] shrink-0 z-50",
           className
         )}
         animate={{
@@ -103,15 +103,15 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-zinc-100 dark:bg-zinc-800 w-full"
         )}
         {...props}>
         {/* Logo */}
         <Link
           to="/dashboard"
-          className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
-          <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
-          <span className="font-medium whitespace-pre text-black dark:text-white">
+          className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-zinc-800">
+          <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-zinc-800 dark:bg-white" />
+          <span className="font-medium whitespace-pre text-zinc-800 dark:text-white">
             ImpactCrew
           </span>
         </Link>
@@ -119,7 +119,7 @@ export const MobileSidebar = ({
         {/* Hamburger Menu */}
         <div className="flex justify-end z-20">
           <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
+            className="text-zinc-800 dark:text-zinc-200"
             onClick={() => setOpen(!open)} />
         </div>
         <AnimatePresence>
@@ -133,11 +133,11 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
+                "fixed h-full w-full inset-0 bg-zinc-50 dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
                 className
               )}>
               <div
-                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
+                className="absolute right-10 top-10 z-50 text-zinc-800 dark:text-neutral-200"
                 onClick={() => setOpen(!open)}>
                 <IconX />
               </div>
@@ -176,7 +176,7 @@ export const SidebarLink = ({
             display: animate ? (open ? "inline-block" : "none") : "inline-block",
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
-          className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0">
+          className="text-zinc-500 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0">
           {link.label}
         </motion.span>
       </button>
@@ -201,7 +201,7 @@ export const SidebarLink = ({
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0">
+        className="text-zinc-500 dark:text-zinc-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0">
         {link.label}
       </motion.span>
     </Link>

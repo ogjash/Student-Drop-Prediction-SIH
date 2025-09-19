@@ -1,61 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Clock, CheckCircle, Send, Eye } from 'lucide-react';
-import { getAndStorePrediction } from '../../data/mockData';
+import { AlertTriangle, Clock, CheckCircle, Send, Eye, RefreshCw, Filter, Bell, Calendar, User } from 'lucide-react';
+import { predictDropout } from '../../api/auth';
 
 const Alerts = () => {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [students, setStudents] = useState([]);
   const [dropoutRates, setDropoutRates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [severityFilter, setSeverityFilter] = useState('all');
 
   useEffect(() => {
-      const fetchStats = async () => {
-        setLoading(true);
-        try {
-          const data = await getAndStorePrediction();
-          
-          setStudents(data.students || []);
-          setDropoutRates(data.dropoutRate || []);
-        } catch (err) {
-         
-          setStudents([]);
-          setDropoutRates([]);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchStats();
-    }, []);
+    fetchBackendData();
+  }, []);
+
+  const fetchBackendData = async () => {
+    try {
+      setLoading(true);
+      const response = await predictDropout();
+      const data = response.data;
+      
+      setStudents(data.mergedData || []);
+      setDropoutRates(data.dropoutRate || []);
+    } catch (error) {
+      console.error('Failed to fetch backend data:', error);
+      setStudents([]);
+      setDropoutRates([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   
   const getStudentSeverity = (student, dropoutRate) => {
-  if (!student) return 'low';
-  // High severity: dropoutRate >= 60, attendance < 70, avg test score < 60, or Pending_Fees === 1
-  if (typeof dropoutRate === 'number' && dropoutRate >= 60) return 'high';
-  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 70) return 'high';
-  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
-    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
-    if (avgScore < 60) return 'high';
-  }
-  if (student.Pending_Fees === 1) return 'medium';
-  // Medium severity: dropoutRate >= 30, attendance < 80, avg test score < 70
-  if (typeof dropoutRate === 'number' && dropoutRate >= 30) return 'medium';
-  if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 80) return 'medium';
-  if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
-    const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
-    if (avgScore < 70) return 'medium';
-  }
-  return 'low';
+    if (!student) return 'low';
+    
+    // Follow RiskTable logic: High risk if dropoutRate > 70, Medium if 40-70, Low if <= 40
+    if (typeof dropoutRate === 'number') {
+      if (dropoutRate > 70) return 'high';
+      if (dropoutRate > 40) return 'medium';
+      return 'low';
+    }
+    
+    // Fallback logic based on other factors if no dropout rate
+    if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 70) return 'high';
+    if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
+      const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
+      if (avgScore < 60) return 'high';
+      if (avgScore < 70) return 'medium';
+    }
+    if (student.Pending_Fees === 1) return 'medium';
+    if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 80) return 'medium';
+    
+    return 'low';
   };
   const getSeverityColor = (severity) => {
     switch (severity) {
       case 'high':
-        return 'bg-red-50 border-red-200 text-red-800';
+        return 'bg-red-50 border-red-200 text-red-700';
       case 'medium':
-        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+        return 'bg-amber-50 border-amber-200 text-amber-700';
+      case 'low':
+        return 'bg-emerald-50 border-emerald-200 text-emerald-700';
       default:
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+        return 'bg-gray-50 border-gray-200 text-gray-700';
     }
   };
 
@@ -64,9 +72,11 @@ const Alerts = () => {
       case 'high':
         return <AlertTriangle className="h-5 w-5 text-red-500" />;
       case 'medium':
-        return <Clock className="h-5 w-5 text-yellow-500" />;
+        return <Clock className="h-5 w-5 text-amber-500" />;
+      case 'low':
+        return <CheckCircle className="h-5 w-5 text-emerald-500" />;
       default:
-        return <CheckCircle className="h-5 w-5 text-blue-500" />;
+        return <CheckCircle className="h-5 w-5 text-gray-500" />;
     }
   };
 
@@ -80,8 +90,30 @@ const Alerts = () => {
     });
   };
 
-  const handleSendNotification = () => {
-    alert('Notification sent to mentor and guardian!');
+  const handleSendNotification = (alertId) => {
+    const alert = generatedAlerts.find(a => a.id === alertId);
+    if (alert) {
+      alert('Notification sent to mentor and guardian for ' + alert.studentName + '!');
+    } else {
+      alert('Notification sent to mentor and guardian!');
+    }
+  };
+
+  const handleNotifyAll = () => {
+    const highRiskAlerts = filteredAlerts.filter(a => a.severity === 'high' && !a.resolved);
+    const mediumRiskAlerts = filteredAlerts.filter(a => a.severity === 'medium' && !a.resolved);
+    
+    if (highRiskAlerts.length > 0) {
+      alert(`Bulk notification sent to mentors and guardians for ${highRiskAlerts.length} high-risk students!`);
+    } else if (mediumRiskAlerts.length > 0) {
+      alert(`Bulk notification sent to mentors and guardians for ${mediumRiskAlerts.length} medium-risk students!`);
+    } else {
+      alert('No students found to notify.');
+    }
+  };
+
+  const handleRefreshAlerts = () => {
+    fetchBackendData();
   };
 
   const generatedAlerts = students.map((student, idx) => {
@@ -130,144 +162,296 @@ const Alerts = () => {
     };
   });
 
+  const filteredAlerts = severityFilter === 'all' 
+    ? generatedAlerts.filter(alert => alert.severity === 'high' || alert.severity === 'medium') // Show high and medium risk students
+    : generatedAlerts.filter(alert => alert.severity === severityFilter);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading alerts...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 w-full overflow-x-hidden">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Alerts & Notifications</h2>
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
-          <span className="text-sm text-gray-500">
-            {generatedAlerts.filter(a => !a.resolved).length} active alerts
+    <div className="space-y-8 w-full">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Student Risk Alerts
+          </h1>
+          <p className="text-gray-600 mt-2">Monitor and send notifications to students requiring attention</p>
+        </div>
+        <div className="flex items-center space-x-4 mt-4 lg:mt-0">
+          <select
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+            <option value="all">All Students</option>
+            <option value="high">High Risk</option>
+            <option value="medium">Medium Risk</option>
+          </select>
+          <button
+            onClick={handleRefreshAlerts}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </button>
+          <button
+            onClick={handleNotifyAll}
+            disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0}
+            className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Notify All At-Risk
+          </button>
+          <span className="inline-flex items-center px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-sm font-medium">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            {filteredAlerts.filter(a => !a.resolved).length} students need attention
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-x-auto">
-        {/* High Priority Alerts */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-            <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
-            High Priority
-          </h3>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-red-600">
-              {generatedAlerts.filter(a => a.severity === 'high' && !a.resolved).length}
+      {/* Alert Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* High Risk Students */}
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 bg-red-50 border-b border-red-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+              High Risk Students
+            </h3>
+          </div>
+          <div className="p-6 text-center">
+            <div className="text-4xl font-bold text-red-600 mb-2">
+              {filteredAlerts.filter(a => a.severity === 'high').length}
             </div>
-            <p className="text-sm text-gray-500 mt-1">Critical alerts</p>
+            <p className="text-sm text-gray-600">Requiring immediate attention</p>
+            <div className="mt-3 text-xs text-gray-500">
+              Dropout rate {'>'} 70%
+            </div>
           </div>
         </div>
 
-        {/* Medium Priority Alerts */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-            <Clock className="h-5 w-5 text-yellow-500 mr-2" />
-            Medium Priority
-          </h3>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-yellow-600">
-              {generatedAlerts.filter(a => a.severity === 'medium' && !a.resolved).length}
+        {/* Medium Risk Students */}
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 bg-amber-50 border-b border-amber-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              <Clock className="h-5 w-5 text-amber-500 mr-2" />
+              Medium Risk Students
+            </h3>
+          </div>
+          <div className="p-6 text-center">
+            <div className="text-4xl font-bold text-amber-600 mb-2">
+              {filteredAlerts.filter(a => a.severity === 'medium').length}
             </div>
-            <p className="text-sm text-gray-500 mt-1">Attention needed</p>
+            <p className="text-sm text-gray-600">Requiring monitoring</p>
+            <div className="mt-3 text-xs text-gray-500">
+              Dropout rate 40-70%
+            </div>
           </div>
         </div>
 
-        {/* Low Priority Alerts */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-            <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
-            Low Priority
-          </h3>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">
-              {generatedAlerts.filter(a => a.severity === 'low' && !a.resolved).length}
+        {/* Pending Notifications */}
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 bg-blue-50 border-b border-blue-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
+              Pending Notifications
+            </h3>
+          </div>
+          <div className="p-6 text-center">
+            <div className="text-4xl font-bold text-blue-600 mb-2">
+              {filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length}
             </div>
-            <p className="text-sm text-gray-500 mt-1">Monitor closely</p>
+            <p className="text-sm text-gray-600">Awaiting notification</p>
+            <div className="mt-3 text-xs text-gray-500">
+              Ready to alert mentors & guardians
+            </div>
           </div>
         </div>
       </div>
 
       {/* Alert List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">Recent Alerts</h3>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900">At-Risk Students</h3>
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-600">
+                Showing {filteredAlerts.length} students requiring alerts
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="divide-y divide-gray-200">
-          {generatedAlerts.map((alert) => {
-            const student = students.find(s => String(s.student_id || s.id) === String(alert.studentId));
-            const severity = alert.severity;
-            return (
-              <div
-                key={alert.id}
-                className={`p-6 hover:bg-gray-50 transition-colors ${
-                  selectedAlert === alert.id ? 'bg-blue-50' : ''
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      {getSeverityIcon(severity)}
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getSeverityColor(severity)}`}
-                      >
-                        {severity.toUpperCase()}
-                      </span>
-                      <span className="text-sm text-gray-500 capitalize">
-                        {alert.type}
-                      </span>
-                    </div>
-                    <h4 className="font-medium text-gray-900 mb-1">
-                      {student?.name}
-                    </h4>
-                    <p className="text-gray-700 mb-2">{alert.message}</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(alert.created)}
-                    </p>
-                    <p className="text-xs text-gray-400">Dropout Rate: {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(2) + '%' : 'N/A'}</p>
-                  </div>
-                  <div className="flex items-center space-x-2 ml-4">
-                    <button
-                      onClick={() => handleSendNotification(alert.id)}
-                      className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      <Send className="h-3 w-3 mr-1" />
-                      Notify
-                    </button>
-                    <button
-                      onClick={() => setSelectedAlert(selectedAlert === alert.id ? null : alert.id)}
-                      className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      <Eye className="h-3 w-3 mr-1" />
-                      Details
-                    </button>
-                  </div>
-                </div>
-                {selectedAlert === alert.id && (
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h5 className="font-medium text-gray-900 mb-2">Student Details</h5>
-                    {student && (
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-gray-500">Class:</span> {student.class}
+        <div className="divide-y divide-gray-100">
+          {filteredAlerts.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-lg font-medium">No at-risk students found</p>
+              <p className="text-sm">No students in the selected category require alerts at this time</p>
+            </div>
+          ) : (
+            filteredAlerts.map((alert) => {
+              const student = students.find(s => String(s.student_id || s.id) === String(alert.studentId));
+              const severity = alert.severity;
+              return (
+                <div
+                  key={alert.id}
+                  className={`p-6 hover:bg-gray-50 transition-colors duration-200 ${
+                    selectedAlert === alert.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-3">
+                        {getSeverityIcon(severity)}
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getSeverityColor(severity)}`}
+                        >
+                          {severity.toUpperCase()}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-700 capitalize">
+                          {alert.type}
+                        </span>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {formatDate(alert.created)}
                         </div>
-                        <div>
-                          <span className="text-gray-500">Attendance:</span> {student.attendance_percentage}%
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Test Score:</span> {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(2)}%
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Fee Status:</span> {student.Pending_Fees === 1 ? 'Pending' : 'Paid'}
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Dropout Rate:</span> {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(2) + '%' : 'N/A'}
-                        </div>
-                        {/* Add more fields as needed */}
                       </div>
-                    )}
+                      <div className="flex items-center space-x-3 mb-2">
+                        <User className="h-4 w-4 text-gray-400" />
+                        <h4 className="font-semibold text-gray-900 text-lg">
+                          {student?.name}
+                        </h4>
+                        <span className="text-sm text-gray-500">
+                          {student?.department} • {student?.class}
+                        </span>
+                      </div>
+                      <p className="text-gray-700 mb-3 leading-relaxed">{alert.message}</p>
+                      <div className="flex items-center space-x-4 text-sm">
+                        <span className="text-gray-500">
+                          Dropout Risk: <span className="font-medium text-red-600">
+                            {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) + '%' : 'N/A'}
+                          </span>
+                        </span>
+                        {student && (
+                          <>
+                            <span className="text-gray-500">
+                              Attendance: <span className="font-medium">
+                                {student.attendance_percentage}%
+                              </span>
+                            </span>
+                            <span className="text-gray-500">
+                              Avg Score: <span className="font-medium">
+                                {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
+                              </span>
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3 ml-6">
+                      <button
+                        onClick={() => handleSendNotification(alert.id)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Notify
+                      </button>
+                      <button
+                        onClick={() => setSelectedAlert(selectedAlert === alert.id ? null : alert.id)}
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        {selectedAlert === alert.id ? 'Hide' : 'Details'}
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  {selectedAlert === alert.id && (
+                    <div className="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                      <h5 className="font-semibold text-gray-900 mb-4 flex items-center">
+                        <User className="h-5 w-5 mr-2 text-gray-600" />
+                        Detailed Student Information
+                      </h5>
+                      {student && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Department:</span>
+                              <span className="font-medium">{student.department}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Class:</span>
+                              <span className="font-medium">{student.class}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Year:</span>
+                              <span className="font-medium">{student.year}</span>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Attendance:</span>
+                              <span className={`font-medium ${
+                                student.attendance_percentage >= 85 ? 'text-emerald-600' : 
+                                student.attendance_percentage >= 70 ? 'text-amber-600' : 'text-red-600'
+                              }`}>
+                                {student.attendance_percentage}%
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Test 1:</span>
+                              <span className="font-medium">{student.test_score_1}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Test 2:</span>
+                              <span className="font-medium">{student.test_score_2}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Test 3:</span>
+                              <span className="font-medium">{student.test_score_3}%</span>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Average Score:</span>
+                              <span className={`font-medium ${
+                                ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 80 ? 'text-emerald-600' : 
+                                ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 60 ? 'text-amber-600' : 'text-red-600'
+                              }`}>
+                                {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Fee Status:</span>
+                              <span className={`font-medium ${student.Pending_Fees === 1 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                {student.Pending_Fees === 1 ? 'Pending' : 'Paid'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Dropout Risk:</span>
+                              <span className="font-semibold text-red-600">
+                                {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) + '%' : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

@@ -82,9 +82,9 @@ const Overview = () => {
         </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-4">
-          <div className="text-lg font-semibold text-gray-600">No data available.</div>
+          <div className="text-lg font-semibold text-zinc-500">No data available.</div>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-blue-600 text-zinc-50 rounded hover:bg-blue-700 transition"
             onClick={() => navigate('/dashboard/add-user')}
           >
             Upload Data

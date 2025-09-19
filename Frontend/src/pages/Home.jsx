@@ -130,19 +130,19 @@ const Home = () => {
   ];
 
   return (
-    <div className="hero min-h-screen bg-[#fff] flex flex-col items-center w-full max-w-full overflow-x-hidden">
+    <div className="hero min-h-screen bg-zinc-50 flex flex-col items-center w-full max-w-full overflow-x-hidden">
       <div className="text-center pt-16 md:pt-32 px-4 md:px-0 w-full max-w-full">
           <MovingButton
             borderRadius="1.75rem"
-            className="mb-4 rounded-full px-4 py-1.5 bg-white text-black border-neutral-200"
+            className="mb-4 rounded-full px-4 py-1.5 bg-zinc-50 text-zinc-800 border-zinc-200"
           >
             SIH Prototype
           </MovingButton>
 
-        <h1 className="text-3xl md:text-5xl font-bold text-[#1c1d1f] mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold text-zinc-800 mb-4">
           Smarter Insights <br className="md:block hidden" /> Stronger Support.
         </h1>
-        <h2 className="text-xl md:text-2xl text-[#505967] mb-8">
+        <h2 className="text-xl md:text-2xl text-zinc-500 mb-8">
           Helping educators act early to reduce dropout rates.
         </h2>
         <div className="space-x-3 sm:space-x-4 justify-center">
@@ -152,19 +152,19 @@ const Home = () => {
       </div>
 
       <div className="tabs w-full max-w-full overflow-x-hidden relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-white pointer-events-none z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-50/30 to-zinc-50 pointer-events-none z-10"></div>
         <TabsDemo />
-        <div className="w-full h-px bg-gray-200 my-8 relative z-20" />
+        <div className="w-full h-px bg-zinc-200 my-8 relative z-20" />
       </div>
 
       <section id="quote" className="h-200 w-full grid place-content-center sticky top-0">
         <TextHighlight className="max-w-5xl text-3xl sm:text-4xl md:text-5xl lg:text-7xl px-8 font-bold text-center tracking-tight leading-[120%]">
           "All of us do not have equal talent, but all of us should have an equal opportunity to develop our talents."
         </TextHighlight>
-        <div className='text-1xl md:text-2xl text-center text-gray-500 mt-10'>Dr. A.P.J. Abdul Kalam</div>
+        <div className='text-1xl md:text-2xl text-center text-zinc-500 mt-10'>Dr. A.P.J. Abdul Kalam</div>
       </section>
 
-      <section id="problem" className="w-full py-24 md:py-32 bg-slate-50">
+      <section id="problem" className="w-full py-24 md:py-32 bg-zinc-100">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             {...motionProps}
@@ -175,7 +175,7 @@ const Home = () => {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center gap-4 text-center mb-12"
           >
-            <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+            <Badge className="rounded-full px-4 py-1.5 text-sm font-medium bg-zinc-200" variant="secondary">
               Problem
             </Badge>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
@@ -191,13 +191,13 @@ const Home = () => {
                 variants={item}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <Card className="h-full overflow-hidden border-border/40 bg-gradient-to-b from-background to-muted/10 backdrop-blur transition-all hover:shadow-md">
+                <Card className="h-full overflow-hidden border-border/40 bg-gradient-to-b from-background to-muted/10 backdrop-blur transition-all hover:shadow-md bg-zinc-50">
                   <CardContent className="p-4 md:p-6 flex flex-col h-full">
-                    <div className="size-8 md:size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary mb-3 md:mb-4">
+                    <div className="size-8 md:size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-3 md:mb-4 text-zinc-800">
                       {problem.icon}
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold mb-2">{problem.title}</h3>
-                    <p className="text-sm md:text-base text-muted-foreground text-justify">{problem.description}</p>
+                    <h3 className="text-lg md:text-xl font-bold mb-2 text-zinc-800">{problem.title}</h3>
+                    <p className="text-sm md:text-base text-justify text-zinc-500">{problem.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -206,22 +206,22 @@ const Home = () => {
         </div>
       </section>
 
-      <section id="solution" className="w-full py-24 md:py-32">
+      <section id="solution" className="w-full">
         <DotBackground>
-          <div className="container mx-auto px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6 py-24 md:py-32">
             <motion.div
               {...motionProps}
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 show: { opacity: 1, y: 0 }
               }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.1 }}
               className="flex flex-col items-center gap-4 text-center mb-16"
             >
-              <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+              <Badge className="rounded-full px-4 py-1.5 text-sm font-medium bg-zinc-100" variant="secondary">
                 Solution
               </Badge>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0a0a0a]">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-800">
                 ML-Powered Early Warning System
               </h2>
             </motion.div>
@@ -235,14 +235,14 @@ const Home = () => {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className="flex gap-4 items-start group"
                 >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-900 font-semibold text-sm shrink-0 transition-colors group-hover:bg-gray-200">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 text-zinc-800 font-semibold text-sm shrink-0 transition-colors group-hover:bg-zinc-200">
                     {i + 1}
                   </span>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
+                    <h3 className="text-lg font-semibold text-zinc-800 mb-2 group-hover:text-zinc-700 transition-colors">
                       {solution.point}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed text-justify">
+                    <p className="text-zinc-500 leading-relaxed text-justify">
                       {solution.description}
                     </p>
                   </div>
@@ -253,7 +253,7 @@ const Home = () => {
         </DotBackground>
       </section>
 
-      <section id="features" className="flex items-center justify-center w-full py-12 md:py-20 lg:py-32 px-2 sm:px-4 max-w-full overflow-x-hidden">
+      <section id="features" className="flex items-center justify-center w-full py-12 md:py-20 lg:py-32 px-2 sm:px-4 max-w-full overflow-x-hidden bg-zinc-100">
         <div className="container max-w-full px-0 sm:px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -263,11 +263,11 @@ const Home = () => {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center justify-center space-y-4 text-center mb-8 md:mb-12"
           >
-            <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+            <Badge className="rounded-full px-4 py-1.5 text-sm font-medium bg-zinc-200" variant="secondary">
               Features
             </Badge>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight px-4">Smart, simple, and effective.</h2>
-            <p className="max-w-[800px] text-muted-foreground text-base md:text-lg px-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight px-4 text-zinc-800">Smart, simple, and effective.</h2>
+            <p className="max-w-[800px] text-base md:text-lg px-4 text-zinc-500">
               Our dashboard combines data, prediction, and alerts into simple, powerful features that empower educators to act early and effectively.
             </p>
           </motion.div>
@@ -282,13 +282,13 @@ const Home = () => {
           >
             {features.map((feature, i) => (
               <motion.div key={i} variants={item}>
-                <Card className="h-full overflow-hidden border-border/40 bg-gradient-to-b from-background to-muted/10 backdrop-blur transition-all hover:shadow-md">
-                  <CardContent className="p-4 md:p-6 flex flex-col h-full">
-                    <div className="size-8 md:size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary mb-3 md:mb-4">
+                <Card className="h-full overflow-hidden border-border/40 bg-zinc-50 backdrop-blur transition-all hover:shadow-md">
+                  <CardContent className="p-4 md:p-6 flex flex-col h-full bg-zinc-50">
+                    <div className="size-8 md:size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-zinc-800 mb-3 md:mb-4">
                       {feature.icon}
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold mb-2">{feature.title}</h3>
-                    <p className="text-sm md:text-base text-muted-foreground">{feature.description}</p>
+                    <h3 className="text-lg text-zinc-800 md:text-xl font-bold mb-2">{feature.title}</h3>
+                    <p className="text-sm text-zinc-500 md:text-base">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

@@ -40,11 +40,11 @@ export const Tabs = ({
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
                 className={cn(
-                  "py-3 md:py-5 px-5 md:px-10 border border-[#d6d9e4] bg-white text-[#505967] hover:text-black transition text-sm md:text-base",
+                  "py-3 md:py-5 px-5 md:px-10 border border-zinc-300 bg-zinc-50 hover:bg-zinc-100 text-zinc-600 hover:text-zinc-800 transition text-sm md:text-base",
                   "md:flex-1",
                   idx === 4 && "col-span-2 justify-self-center w-1/2", // Center the 5th item in mobile
                   active.value === tab.value
-                    ? "bg-gray-200 text-black"
+                    ? "bg-zinc-200 text-zinc-800"
                     : "",
                   tabClassName
                 )}
@@ -57,7 +57,7 @@ export const Tabs = ({
                     layoutId="clickedbutton"
                     transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
                     className={cn(
-                      "absolute inset-0 bg-gray-200",
+                      "absolute inset-0 bg-zinc-200",
                       activeTabClassName
                     )}
                   />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Calendar, Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Download, Calendar, Users, TrendingUp, AlertTriangle, FileText, BarChart3, Activity } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { predictDropout } from '../../api/auth';
 
@@ -131,15 +131,6 @@ const Reports = () => {
 
   const riskDistributionData = calculateRiskDistribution();
 
-  // Static attendance data (could be calculated from backend data over time)
-  const attendanceData = [
-    { month: 'Sep', rate: backendData?.averageAttendance || 88 },
-    { month: 'Oct', rate: (backendData?.averageAttendance || 88) - 3 },
-    { month: 'Nov', rate: (backendData?.averageAttendance || 88) + 2 },
-    { month: 'Dec', rate: (backendData?.averageAttendance || 88) - 1 },
-    { month: 'Jan', rate: (backendData?.averageAttendance || 88) + 4 },
-  ];
-
   const handleExportReport = (reportType) => {
     // In a real app, this would trigger a download
     alert(`Exporting ${reportType} report...`);
@@ -154,27 +145,32 @@ const Reports = () => {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading reports data...</p>
+          <p className="mt-4 text-zing-500">Loading reports data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 w-full">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
+    <div className="space-y-8 w-full">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-zinc-800">Reports & Analytics</h1>
+          <p className="text-gray-600 mt-2">Comprehensive insights into student performance and risk assessment</p>
+        </div>
+        <div className="flex items-center space-x-4 mt-4 lg:mt-0">
           <button
             onClick={handleRefreshData}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 border border-zinc-300 text-sm font-medium rounded-lg text-zinc-800 bg-zinc-50 hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
           >
+            <Activity className="h-4 w-4 mr-2" />
             Refresh Data
           </button>
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
             <option value="last7days">Last 7 days</option>
             <option value="last30days">Last 30 days</option>
@@ -183,7 +179,7 @@ const Reports = () => {
           </select>
           <button
             onClick={() => handleExportReport('comprehensive')}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-zinc-50 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
           >
             <Download className="h-4 w-4 mr-2" />
             Export Report
@@ -192,182 +188,241 @@ const Reports = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-zinc-100 rounded-xl border border-zinc-300 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Report Period</p>
-              <p className="text-lg font-semibold text-gray-900">30 Days</p>
+              <p className="text-sm font-medium text-zinc-500">Report Period</p>
+              <p className="text-2xl font-bold text-zinc-800">Biweekly</p>
             </div>
-            <Calendar className="h-8 w-8 text-blue-500" />
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <Calendar className="h-6 w-6 text-blue-600" />
+            </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-zinc-100 rounded-xl border border-zinc-300 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Analyzed</p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-sm font-medium text-zinc-500">Students Analyzed</p>
+              <p className="text-2xl font-bold text-zinc-800">
                 {loading ? 'Loading...' : (backendData?.totalStudents || 0)}
               </p>
             </div>
-            <Users className="h-8 w-8 text-green-500" />
+            <div className="p-3 bg-green-50 rounded-lg">
+              <Users className="h-6 w-6 text-green-600" />
+            </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-zinc-100 rounded-xl border border-zinc-300 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg Performance</p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-sm font-medium text-zinc-500">Avg Performance</p>
+              <p className="text-2xl font-bold text-zinc-800">
                 {loading ? 'Loading...' : `${backendData?.averageTestScore || 0}%`}
               </p>
             </div>
-            <TrendingUp className="h-8 w-8 text-purple-500" />
+            <div className="p-3 bg-purple-50 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-purple-600" />
+            </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-zinc-100 rounded-xl border border-zinc-300 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Risk Cases</p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-sm font-medium text-zinc-500">High Risk Cases</p>
+              <p className="text-2xl font-bold text-zinc-800">
                 {loading ? 'Loading...' : (backendData?.atRiskStudents || 0)}
               </p>
             </div>
-            <AlertTriangle className="h-8 w-8 text-red-500" />
+            <div className="p-3 bg-red-50 rounded-lg">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Attendance Trends */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Attendance Trends</h3>
-            <button
-              onClick={() => handleExportReport('attendance')}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-            >
-              Export
-            </button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Department Performance */}
+        <div className="bg-zinc-100 rounded-xl border border-zinc-300 overflow-hidden">
+          <div className="px-6 py-4 border-b border-zinc-300 bg-zinc-50">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Department Performance</h3>
+                <p className="text-sm text-gray-600">Average scores by department</p>
+              </div>
+              <button
+                onClick={() => handleExportReport('department')}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Export
+              </button>
+            </div>
           </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={attendanceData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="month" stroke="#6b7280" fontSize={12} />
-                <YAxis stroke="#6b7280" fontSize={12} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Bar dataKey="rate" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="p-6">
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={classPerformanceData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis 
+                    dataKey="class" 
+                    stroke="#6b7280" 
+                    fontSize={12}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis stroke="#6b7280" fontSize={12} domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                  />
+                  <Bar dataKey="avgScore" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Avg Score (%)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
         {/* Risk Distribution */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Risk Distribution</h3>
-            <button
-              onClick={() => handleExportReport('risk')}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-            >
-              Export
-            </button>
+        <div className="bg-zinc-100 rounded-xl border border-zinc-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-zinc-200 bg-zinc-50">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-zinc-800">Risk Distribution</h3>
+                <p className="text-sm text-zinc-500">Student risk level breakdown</p>
+              </div>
+              <button
+                onClick={() => handleExportReport('risk')}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Export
+              </button>
+            </div>
           </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={riskDistributionData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}%`}
-                >
-                  {riskDistributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="p-6">
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={riskDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="value"
+                    label={({ name, value }) => `${name}: ${value}`}
+                  >
+                    {riskDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Class Performance Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Class Performance Analysis</h3>
-          <button
-            onClick={() => handleExportReport('class-performance')}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-          >
-            Export
-          </button>
+      <div className="bg-zinc-100 rounded-xl border border-zinc-300 overflow-hidden">
+        <div className="px-6 py-4 border-b border-zinc-200 bg-zinc-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-800">Detailed Class Performance</h3>
+              <p className="text-sm text-zinc-500">Comprehensive breakdown by department</p>
+            </div>
+            <button
+              onClick={() => handleExportReport('class-performance')}
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Export
+            </button>
+          </div>
         </div>
-        <div className="w-full">
-          <table className="w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto">
+          <table className="w-full divide-y divide-zinc-200">
+            <thead className="bg-zinc-100">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Class
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Department
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Students
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Attendance Rate
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Average Score
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Performance
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Performance Status
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {classPerformanceData.map((classData) => (
-                <tr key={classData.class} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {classData.class}
-                  </td>
+            <tbody className="bg-zinc-50 divide-y divide-zinc-100">
+              {classPerformanceData.map((classData, index) => (
+                <tr key={classData.class} className={`hover:bg-gray-50 transition-colors duration-200 ${index % 2 === 0 ? 'bg-zinc-50' : 'bg-zinc-100'}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="text-sm text-gray-900">{classData.attendance}%</div>
-                      <div className="ml-3 w-16 bg-gray-200 rounded-full h-2">
+                      <div className="p-2 bg-blue-50 rounded-lg mr-3">
+                        <BarChart3 className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900">{classData.class}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{classData.studentCount}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-sm font-semibold text-zinc-800">{classData.attendance}%</div>
+                      <div className="w-20 bg-zinc-200 rounded-full h-2">
                         <div
-                          className={`h-2 rounded-full ${
+                          className={`h-2 rounded-full transition-all duration-300 ${
                             classData.attendance >= 90
-                              ? 'bg-green-500'
+                              ? 'bg-emerald-500'
                               : classData.attendance >= 80
-                              ? 'bg-yellow-500'
+                              ? 'bg-amber-500'
                               : 'bg-red-500'
                           }`}
-                          style={{ width: `${classData.attendance}%` }}
+                          style={{ width: `${Math.min(classData.attendance, 100)}%` }}
                         ></div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {classData.avgScore}%
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className={`text-sm font-semibold ${
+                      classData.avgScore >= 80 ? 'text-emerald-600' : 
+                      classData.avgScore >= 60 ? 'text-amber-600' : 'text-red-600'
+                    }`}>
+                      {classData.avgScore}%
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
                         classData.avgScore >= 85 && classData.attendance >= 90
-                          ? 'bg-green-100 text-green-800'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           : classData.avgScore >= 75 && classData.attendance >= 80
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-red-50 text-red-700 border-red-200'
                       }`}
                     >
                       {classData.avgScore >= 85 && classData.attendance >= 90

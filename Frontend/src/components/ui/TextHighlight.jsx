@@ -93,7 +93,7 @@ const TextHighlight = ({ children, className = "" }) => {
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: #ffffff;
+          background-color: #fafafa;
           transform-origin: right center;
           pointer-events: none;
           opacity: 0.6;
