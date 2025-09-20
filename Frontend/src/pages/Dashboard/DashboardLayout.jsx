@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Sidebar, SidebarBody, SidebarLink } from '../../components/index.js'
-import { verify } from '../../api/auth.js'
+import { verify,logout } from '../../api/auth.js'
 import { 
   IconBrandTabler,
   IconUsers,
@@ -59,12 +59,16 @@ const DashboardLayout = () => {
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
-    
-    // Redirect to home page
-    navigate('/', { replace: true });
+  const handleLogout = async () => {
+    try {
+      await logout();
+      localStorage.removeItem('authToken');
+      sessionStorage.clear();
+      
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const sidebarLinks = [
@@ -103,12 +107,23 @@ const DashboardLayout = () => {
   return (
     <div className={cn(
       "mx-auto flex w-full flex-1 flex-col rounded-md border border-zinc-300 bg-zinc-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-      "min-h-screen"
+      "min-h-screen relative"
     )}>
+
+      {/* Mobile Sidebar Overlay */}
+      {open && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
         <SidebarBody className="justify-between gap-6">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
+            <div className="hidden md:block">
+              {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
+            </div>
             <div className="mt-10 flex flex-col gap-2">
               {sidebarLinks.map((link, idx) => (
                 <SidebarLink key={idx} link={link} />
