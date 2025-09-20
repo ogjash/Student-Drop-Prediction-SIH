@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { Sidebar, SidebarBody, SidebarLink } from '../../components/ui/Sidebar.jsx'
+import { Sidebar, SidebarBody, SidebarLink } from '../../components/index.js'
 import { verify } from '../../api/auth.js'
 import { 
   IconBrandTabler,
@@ -11,8 +11,8 @@ import {
   IconReportAnalytics,
   IconBell,
   IconUserPlus,
-  IconPin,
-  IconPinFilled
+  IconLayoutSidebarLeftExpandFilled,
+  IconLayoutSidebarLeftCollapse
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -194,15 +194,12 @@ const Logo = ({ animate, setAnimate }) => {
         }}
       >
         <motion.div
-          animate={{ 
-            rotate: animate ? 0 : 45,
-            transition: { duration: 0.3 }
-          }}
+
         >
           {animate ? (
-            <IconPin className="h-4 w-4 text-zinc-600 dark:text-neutral-400" />
+            <IconLayoutSidebarLeftCollapse className="h-6 w-6 text-zinc-600 dark:text-neutral-400" />
           ) : (
-            <IconPinFilled className="h-4 w-4 text-zinc-800 dark:text-gray-500" />
+            <IconLayoutSidebarLeftExpandFilled className="h-6 w-6 text-zinc-800 dark:text-gray-500" />
           )}
         </motion.div>
       </motion.button>

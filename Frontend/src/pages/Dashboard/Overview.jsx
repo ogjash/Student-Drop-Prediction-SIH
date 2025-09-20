@@ -4,6 +4,7 @@ import { Users, AlertTriangle, BookOpen, TrendingUp } from 'lucide-react';
 import {StatsCard, RiskTable} from '../../components/index';
 import { getAndStorePrediction } from '../../data/mockData';
 import { useEffect, useState } from 'react';
+import { OverviewSkeleton } from '../../components/ui/Skeleton';
 
 const Overview = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Overview = () => {
   return (
   <div className="space-y-6 w-full">
       {loading ? (
-        <div>Loading...</div>
+        <OverviewSkeleton />
       ) : stats ? (
         <>
           {/* Stats Cards */}
@@ -91,6 +92,7 @@ const Overview = () => {
           </button>
         </div>
       )}
+
     </div>
   );
 };

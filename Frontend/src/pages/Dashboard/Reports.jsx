@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Download, Calendar, Users, TrendingUp, AlertTriangle, FileText, BarChart3, Activity } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { predictDropout } from '../../api/auth';
+import { ReportsSkeleton } from '../../components/ui/Skeleton';
 
 const Reports = () => {
   const [dateRange, setDateRange] = useState('last30days');
@@ -141,14 +142,7 @@ const Reports = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-zing-500">Loading reports data...</p>
-        </div>
-      </div>
-    );
+    return <ReportsSkeleton />;
   }
 
   return (

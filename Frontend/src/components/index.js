@@ -7,7 +7,7 @@ import DarkButton from "./ui/DarkButton.jsx";
 import LightButton from "./ui/LightButton.jsx";
 import { DotBackground } from "./ui/DotBackground.jsx";
 import { MovingButton } from "./ui/MovingBorder.jsx";
-import { Sidebar } from "./ui/Sidebar.jsx";
+import { Sidebar, SidebarBody, SidebarLink } from "./ui/Sidebar.jsx";
 import { Tabs } from "./ui/Tabs.jsx";
 import { TabsDemo } from "./ui/TabsDemo.jsx";
 import TextHighlight from "./ui/TextHighlight.jsx";
@@ -15,6 +15,7 @@ import StatsCard from "./dashboard/Cards/StatsCard.jsx";
 import AttendanceChart from "./dashboard/Charts/AttendanceChart.jsx";
 import FilterBar from "./dashboard/Filters/FilterBar.jsx";
 import RiskTable from "./dashboard/Tables/RiskTable.jsx";
+import { OverviewSkeleton, StudentsSkeleton, StudentDetailSkeleton, ReportsSkeleton, AlertsSkeleton } from "./ui/Skeleton.jsx"
 
 export {
     Navbar,
@@ -28,6 +29,8 @@ export {
     LightButton,
     DotBackground,
     Sidebar,
+    SidebarBody,
+    SidebarLink,
     Tabs,
     TabsDemo,
     TextHighlight,
@@ -35,5 +38,9 @@ export {
     AttendanceChart,
     FilterBar,
     RiskTable,
-
+    OverviewSkeleton, 
+    StudentsSkeleton, 
+    StudentDetailSkeleton, 
+    ReportsSkeleton, 
+    AlertsSkeleton,
 };
