@@ -55,6 +55,26 @@ const DashboardLayout = () => {
     }
   }, [animate]);
 
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      // Close sidebar on mobile when window is resized
+      if (window.innerWidth < 1024 && open) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [open]);
+
+  // Close sidebar on route change for mobile
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setOpen(false);
+    }
+  }, [location.pathname]);
+
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
@@ -107,33 +127,49 @@ const DashboardLayout = () => {
   return (
     <div className={cn(
       "mx-auto flex w-full flex-1 flex-col rounded-md border border-zinc-300 bg-zinc-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-      "min-h-screen relative"
+      "min-h-screen relative overflow-hidden"
     )}>
 
       {/* Mobile Sidebar Overlay */}
       {open && (
         <div 
-          className="fixed inset-0 bg-zinc-50 bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setOpen(false)}
         />
       )}
 
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-6 lg:gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            <div className="hidden md:block">
+            {/* Logo section - responsive visibility */}
+            <div className="hidden lg:block">
               {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
             </div>
-            <div className="mt-10 flex flex-col gap-2">
+            
+            {/* Mobile logo - always show when sidebar is open on mobile */}
+            <div className="block lg:hidden">
+              <Logo animate={animate} setAnimate={setAnimate} />
+            </div>
+            
+            <div className="mt-6 lg:mt-10 flex flex-col gap-2">
               {sidebarLinks.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
+                <SidebarLink 
+                  key={idx} 
+                  link={link}
+                  onClick={() => {
+                    // Close sidebar on mobile when a link is clicked
+                    if (window.innerWidth < 1024) {
+                      setOpen(false);
+                    }
+                  }}
+                />
               ))}
             </div>
           </div>
           
           {/* Username section */}
           <div className="w-full">
-            <div className="flex items-center justify-between rounded-lg hover:bg-zinc-100 dark:hover:bg-neutral-800 transition-colors">
+            <div className="flex items-center justify-between rounded-lg hover:bg-zinc-100 dark:hover:bg-neutral-800 transition-colors p-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <div className="h-7 w-7 shrink-0 rounded-full bg-zinc-400 flex items-center justify-center text-zinc-50 text-sm font-bold">
                   {loading ? "..." : (userInfo?.username?.[0]?.toUpperCase() || userInfo?.name?.[0]?.toUpperCase() || "A")}
@@ -150,7 +186,7 @@ const DashboardLayout = () => {
                   className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
                   title="Logout"
                 >
-                  <IconLogout className="h-5 w-5 text-zinc-600 dark:text-neutral-400" />
+                  <IconLogout className="h-4 w-4 lg:h-5 lg:w-5 text-zinc-600 dark:text-neutral-400" />
                 </button>
               )}
             </div>
@@ -158,7 +194,7 @@ const DashboardLayout = () => {
         </SidebarBody>
       </Sidebar>
       <div className={cn(
-        "flex-1 transition-all duration-300",
+        "flex-1 transition-all duration-300 ease-in-out min-w-0",
         // When animate is true (unpinned): responsive sidebar behavior
         animate ? (
           open ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[60px]"
@@ -180,7 +216,7 @@ const Logo = ({ animate, setAnimate }) => {
 
   return (
     <motion.div 
-      className="relative z-20 flex items-center justify-between py-1 text-sm font-normal text-zinc-800"
+      className="relative z-20 flex items-center justify-between py-2 text-sm font-normal text-zinc-800"
       animate={{
         backgroundColor: animate ? "transparent" : "rgba(0,0,0,0.05)",
         transition: { duration: 0.3 }
@@ -188,18 +224,19 @@ const Logo = ({ animate, setAnimate }) => {
     >
       <Link
         to="/dashboard"
-        className="flex items-center space-x-2">
+        className="flex items-center space-x-2 min-w-0 flex-1">
         <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-zinc-800 dark:bg-white" />
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="font-medium whitespace-pre text-zinc-800 dark:text-white">
+          className="font-medium whitespace-pre text-zinc-800 dark:text-white truncate">
           ImpactCrew
         </motion.span>
       </Link>
+      {/* Pin/Unpin button - hide on mobile, show on lg+ */}
       <motion.button
         onClick={togglePin}
-        className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+        className="hidden lg:block p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
         title={animate ? "Pin sidebar" : "Unpin sidebar"}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -208,13 +245,11 @@ const Logo = ({ animate, setAnimate }) => {
           transition: { duration: 0.2 }
         }}
       >
-        <motion.div
-
-        >
+        <motion.div>
           {animate ? (
-            <IconLayoutSidebarLeftCollapse className="h-6 w-6 text-zinc-600 dark:text-neutral-400" />
+            <IconLayoutSidebarLeftCollapse className="h-5 w-5 lg:h-6 lg:w-6 text-zinc-600 dark:text-neutral-400" />
           ) : (
-            <IconLayoutSidebarLeftExpandFilled className="h-6 w-6 text-zinc-800 dark:text-gray-500" />
+            <IconLayoutSidebarLeftExpandFilled className="h-5 w-5 lg:h-6 lg:w-6 text-zinc-800 dark:text-gray-500" />
           )}
         </motion.div>
       </motion.button>
@@ -235,7 +270,7 @@ const LogoIcon = () => {
 const DashboardContent = ({ animate, open }) => {
   return (
     <motion.div 
-      className="flex flex-1"
+      className="flex flex-1 min-h-screen flex-col"
       initial={{ opacity: 0, x: 20 }}
       animate={{ 
         opacity: 1, 
@@ -245,12 +280,11 @@ const DashboardContent = ({ animate, open }) => {
           ease: "easeInOut"
         }
       }}
-      key={animate ? 'animated' : 'pinned'} // Force re-animation when pin state changes
     >
       <motion.div 
-        className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-zinc-300 bg-zinc-50 p-2 md:p-10 dark:border-zinc-600 dark:bg-zinc-900"
+        className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-lg lg:rounded-tl-2xl border border-zinc-300 bg-zinc-50 p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 dark:border-zinc-600 dark:bg-zinc-900 overflow-hidden"
         animate={{
-          scale: animate ? (open ? 1 : 1.02) : 1,
+          scale: animate ? (open ? 1 : 1.01) : 1,
           transition: {
             duration: 0.2,
             ease: "easeInOut"
@@ -258,6 +292,7 @@ const DashboardContent = ({ animate, open }) => {
         }}
       >
         <motion.div
+          className="w-full max-w-full overflow-x-auto"
           initial={{ opacity: 0, y: 10 }}
           animate={{ 
             opacity: 1, 

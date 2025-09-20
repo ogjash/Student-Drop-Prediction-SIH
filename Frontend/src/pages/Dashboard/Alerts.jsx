@@ -219,9 +219,8 @@ const Alerts = () => {
               disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0}
               className="inline-flex items-center justify-center px-3 sm:px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Notify All At-Risk</span>
-              <span className="sm:hidden">Notify All</span>
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              <span>Notify All</span>
             </button>
             <div className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-xs sm:text-sm font-medium">
               <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />

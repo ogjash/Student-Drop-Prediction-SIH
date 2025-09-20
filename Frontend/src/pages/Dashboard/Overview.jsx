@@ -49,28 +49,24 @@ const Overview = () => {
             <StatsCard
               title="Total Students"
               value={stats.totalStudents.toString()}
-             
               icon={Users}
               color="blue"
             />
             <StatsCard
               title="At-Risk Students"
               value={stats.atRiskStudents.toString()}
-             
               icon={AlertTriangle}
               color="red"
             />
             <StatsCard
               title="Average Attendance"
               value={`${stats.averageAttendance}%`}
-              
               icon={BookOpen}
               color="green"
             />
             <StatsCard
               title="Average Test Score"
               value={`${stats.averageTestScore}%`}
-             
               icon={TrendingUp}
               color="purple"
             />
