@@ -203,7 +203,7 @@ const DashboardLayout = () => {
           "ml-0 md:ml-[300px]"
         )
       )}>
-        <DashboardContent animate={animate} open={open} />
+        <DashboardContent animate={animate} />
       </div>
     </div>
   )
@@ -267,7 +267,7 @@ const LogoIcon = () => {
   );
 };
 
-const DashboardContent = ({ animate, open }) => {
+const DashboardContent = ({ animate }) => {
   return (
     <motion.div 
       className="flex flex-1 min-h-screen flex-col"
@@ -281,31 +281,13 @@ const DashboardContent = ({ animate, open }) => {
         }
       }}
     >
-      <motion.div 
+      <div 
         className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-lg lg:rounded-tl-2xl border border-zinc-300 bg-zinc-50 p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 dark:border-zinc-600 dark:bg-zinc-900 overflow-hidden"
-        animate={{
-          scale: animate ? (open ? 1 : 1.01) : 1,
-          transition: {
-            duration: 0.2,
-            ease: "easeInOut"
-          }
-        }}
       >
-        <motion.div
-          className="w-full max-w-full overflow-x-auto"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ 
-            opacity: 1, 
-            y: 0,
-            transition: {
-              duration: 0.4,
-              delay: animate ? 0.1 : 0.2
-            }
-          }}
-        >
+        <div className="w-full max-w-full overflow-x-auto">
           <Outlet />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </motion.div>
   );
 };
