@@ -1,5 +1,6 @@
-import { Eye, AlertTriangle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Eye, AlertTriangle, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { departments } from '../../../data/mockData';
+import { useState } from 'react';
 
 const getAvgTestScore = (student) => {
   const t1 = typeof student.test_score_1 === 'number' ? student.test_score_1 : 0;
@@ -20,6 +21,27 @@ const getScoreStatus = (score) => {
   return { color: 'text-red-600', icon: TrendingDown };
 };
 const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 10;
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(students.length / studentsPerPage);
+  const startIndex = (currentPage - 1) * studentsPerPage;
+  const endIndex = startIndex + studentsPerPage;
+  const currentStudents = students.slice(startIndex, endIndex);
+  
+  // Handle page navigation
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+  
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
+  
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   
 const getRiskColor = (level) => {
   switch (level) {
@@ -60,7 +82,12 @@ const getRiskColor = (level) => {
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-gray-900">Student Risk Assessment</h3>
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900">Student Risk Assessment</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Showing {startIndex + 1}-{Math.min(endIndex, students.length)} of {students.length} students
+            </p>
+          </div>
           <div className="flex items-center space-x-4 text-sm text-gray-500">
             <span className="flex items-center">
               <div className="w-3 h-3 bg-red-200 rounded-full mr-2"></div>
@@ -102,11 +129,13 @@ const getRiskColor = (level) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {students.map((student, idx) => {
+            {currentStudents.map((student, idx) => {
+              // Calculate the original index for dropoutRates
+              const originalIdx = startIndex + idx;
               // Get dropoutRate from dropoutRates prop if available, else fallback to student.dropoutRate
               const dropoutRate =
-                Array.isArray(dropoutRates) && dropoutRates.length > idx
-                  ? dropoutRates[idx]
+                Array.isArray(dropoutRates) && dropoutRates.length > originalIdx
+                  ? dropoutRates[originalIdx]
                   : student.dropoutRate;
               
               const avgScore = parseFloat(getAvgTestScore(student));
@@ -189,6 +218,66 @@ const getRiskColor = (level) => {
           </tbody>
         </table>
       </div>
+      
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-700">
+              Page {currentPage} of {totalPages}
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </button>
+              
+              {/* Page Numbers */}
+              <div className="flex space-x-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNumber = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNumber = totalPages - 4 + i;
+                  } else {
+                    pageNumber = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageClick(pageNumber)}
+                      className={`inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md transition-colors duration-200 ${
+                        currentPage === pageNumber
+                          ? 'border-blue-500 bg-blue-50 text-blue-600'
+                          : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

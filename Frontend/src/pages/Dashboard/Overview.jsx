@@ -6,6 +6,10 @@ import { getAndStorePrediction } from '../../data/mockData';
 import { useEffect, useState } from 'react';
 import { OverviewSkeleton } from '../../components/ui/Skeleton';
 
+// Import chart components
+import DropoutRiskChart from '../../components/dashboard/Charts/DropoutRiskChart';
+import DepartmentAnalysisChart from '../../components/dashboard/Charts/DepartmentAnalysisChart';
+
 const Overview = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
@@ -21,7 +25,8 @@ const Overview = () => {
         setStats(data);
         setStudents(data.students || []);
         setDropoutRates(data.dropoutRate || []);
-      } catch (err) {
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
         setStats(null);
         setStudents([]);
         setDropoutRates([]);
@@ -44,6 +49,13 @@ const Overview = () => {
         <OverviewSkeleton />
       ) : stats ? (
         <>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <h2 className="text-2xl font-bold text-zinc-800">Overview</h2>
+            <p className="text-sm text-zinc-500 mt-1 md:mt-0">
+              Dashboard insights and analytics
+            </p>
+          </div>
+          
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard
@@ -70,6 +82,15 @@ const Overview = () => {
               icon={TrendingUp}
               color="purple"
             />
+          </div>
+          
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            {/* Dropout Risk Distribution */}
+            <DropoutRiskChart students={students} dropoutRates={dropoutRates} />
+            
+            {/* Department Analysis */}
+            <DepartmentAnalysisChart students={students} dropoutRates={dropoutRates} />
           </div>
           
           {/* Risk Table */}

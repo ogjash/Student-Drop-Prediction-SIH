@@ -60,7 +60,7 @@ const StudentDetail = () => {
       case 'High': return { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' };
       case 'Medium': return { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' };
       case 'Low': return { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
-      default: return { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' };
+      default: return { bg: 'bg-zinc-50', text: 'text-zinc-700', border: 'border-zinc-200' };
     }
   };
 
@@ -90,9 +90,9 @@ const StudentDetail = () => {
           <ArrowLeft className="h-4 w-4 mr-2" /> 
           Back to Students
         </button>
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+        <div className="bg-white rounded-xl border border-zinc-200 p-8 text-center">
           <div className="text-red-600 text-lg font-medium">Student not found</div>
-          <p className="text-gray-500 mt-2">The student you're looking for doesn't exist or has been removed.</p>
+          <p className="text-zinc-500 mt-2">The student you're looking for doesn't exist or has been removed.</p>
         </div>
       </div>
     );
@@ -157,12 +157,12 @@ const StudentDetail = () => {
     return suggestions;
   };
   return (
-    <div className="space-y-8 w-full">
+    <div className="space-y-4 w-full">
       {/* Header with Back Button */}
       <div className="flex items-center justify-between">
         <button 
           onClick={() => navigate('/dashboard/students')} 
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 border border-blue-200"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 border border-blue-200"
         >
           <ArrowLeft className="h-4 w-4 mr-2" /> 
           Back to Students
@@ -170,25 +170,25 @@ const StudentDetail = () => {
       </div>
 
       {/* Student Profile Card */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-8 py-6 border-b border-gray-200">
+      <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-4 border-b border-zinc-200">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
+            <div className="flex items-center space-x-3">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                 {student.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{student.name}</h1>
-                <p className="text-lg text-gray-600 flex items-center mt-1">
-                  <GraduationCap className="h-5 w-5 mr-2" />
+                <h1 className="text-xl font-bold text-zinc-900">{student.name}</h1>
+                <p className="text-sm text-zinc-600 flex items-center">
+                  <GraduationCap className="h-4 w-4 mr-1" />
                   {student.department} - Year {student.year}
                 </p>
               </div>
             </div>
             {studentDropoutRate !== null && (
-              <div className="mt-4 lg:mt-0">
-                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border ${getRiskColor().bg} ${getRiskColor().text} ${getRiskColor().border}`}>
-                  <AlertTriangle className="h-4 w-4 mr-2" />
+              <div className="mt-2 lg:mt-0">
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getRiskColor().bg} ${getRiskColor().text} ${getRiskColor().border}`}>
+                  <AlertTriangle className="h-3 w-3 mr-1" />
                   {getRiskLevel()} Risk ({studentDropoutRate.toFixed(1)}%)
                 </div>
               </div>
@@ -196,36 +196,36 @@ const StudentDetail = () => {
           </div>
         </div>
 
-        <div className="px-8 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex items-center space-x-3">
-              <Mail className="h-5 w-5 text-gray-400" />
+        <div className="px-4 py-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="flex items-center space-x-2">
+              <Mail className="h-4 w-4 text-zinc-400" />
               <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium text-gray-900">{student.email}</p>
+                <p className="text-xs text-zinc-500">Email</p>
+                <p className="font-medium text-zinc-900 text-sm">{student.email}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Phone className="h-5 w-5 text-gray-400" />
+            <div className="flex items-center space-x-2">
+              <Phone className="h-4 w-4 text-zinc-400" />
               <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p className="font-medium text-gray-900">{student.phone}</p>
+                <p className="text-xs text-zinc-500">Phone</p>
+                <p className="font-medium text-zinc-900 text-sm">{student.phone}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Calendar className="h-5 w-5 text-gray-400" />
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4 text-zinc-400" />
               <div>
-                <p className="text-sm text-gray-500">Attendance</p>
-                <p className={`font-semibold ${getAttendanceColor(student.attendance_percentage)}`}>
+                <p className="text-xs text-zinc-500">Attendance</p>
+                <p className={`font-semibold text-sm ${getAttendanceColor(student.attendance_percentage)}`}>
                   {student.attendance_percentage}%
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <BookOpen className="h-5 w-5 text-gray-400" />
+            <div className="flex items-center space-x-2">
+              <BookOpen className="h-4 w-4 text-zinc-400" />
               <div>
-                <p className="text-sm text-gray-500">Avg Score</p>
-                <p className={`font-semibold ${getPerformanceColor(parseFloat(getAvgTestScore(student)))}`}>
+                <p className="text-xs text-zinc-500">Avg Score</p>
+                <p className={`font-semibold text-sm ${getPerformanceColor(parseFloat(getAvgTestScore(student)))}`}>
                   {getAvgTestScore(student)}%
                 </p>
               </div>
@@ -234,35 +234,102 @@ const StudentDetail = () => {
         </div>
       </div>
 
+      {/* Risk Factors and Recommended Actions Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Risk Factors */}
+        {getRiskFactors().length > 0 && (
+          <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-200 bg-red-50">
+              <h3 className="text-lg font-semibold text-zinc-900 flex items-center">
+                <AlertTriangle className="h-5 w-5 mr-2 text-red-600" />
+                Risk Factors
+              </h3>
+              <p className="text-xs text-zinc-600">Areas requiring attention</p>
+            </div>
+            <div className="p-4">
+              <div className="grid gap-3">
+                {getRiskFactors().map((factor, idx) => (
+                  <div key={idx} className="flex items-start space-x-3 p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                    <div className="flex-shrink-0">
+                      <factor.icon className={`h-5 w-5 ${
+                        factor.severity === 'high' ? 'text-red-500' : 
+                        factor.severity === 'warning' ? 'text-amber-500' : 'text-orange-500'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-zinc-900 text-sm">{factor.text}</h4>
+                      <p className="text-xs text-zinc-600 mt-1">{factor.description}</p>
+                    </div>
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      factor.severity === 'high' ? 'bg-red-100 text-red-700' : 
+                      factor.severity === 'warning' ? 'bg-amber-100 text-amber-700' : 'bg-orange-100 text-orange-700'
+                    }`}>
+                      {factor.severity.charAt(0).toUpperCase() + factor.severity.slice(1)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Suggested Actions */}
+        {getSuggestions().length > 0 && (
+          <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-200 bg-blue-50">
+              <h3 className="text-lg font-semibold text-zinc-900 flex items-center">
+                <User className="h-5 w-5 mr-2 text-blue-600" />
+                Recommended Actions
+              </h3>
+              <p className="text-xs text-zinc-600">Suggested interventions for mentors</p>
+            </div>
+            <div className="p-4">
+              <div className="space-y-3">
+                {getSuggestions().map((suggestion, idx) => (
+                  <div key={idx} className="flex items-start space-x-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-zinc-800 text-sm leading-relaxed">{suggestion}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Performance Chart */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-8 py-6 border-b border-gray-200 bg-gray-50">
-          <h3 className="text-xl font-semibold text-gray-900">Academic Performance</h3>
-          <p className="text-sm text-gray-600 mt-1">Test scores over time</p>
+      <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-zinc-200 bg-zinc-50">
+          <h3 className="text-lg font-semibold text-zinc-900">Academic Performance</h3>
+          <p className="text-xs text-zinc-600">Test scores over time</p>
         </div>
-        <div className="p-8">
-          <div className="h-80">
+        <div className="p-4">
+          <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={scoreData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
                 <XAxis 
                   dataKey="date" 
-                  stroke="#6b7280" 
+                  stroke="#71717a" 
                   fontSize={12} 
-                  tick={{ fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
+                  tick={{ fill: '#71717a' }}
+                  axisLine={{ stroke: '#e4e4e7' }}
                 />
                 <YAxis 
-                  stroke="#6b7280" 
+                  stroke="#71717a" 
                   fontSize={12} 
-                  tick={{ fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
+                  tick={{ fill: '#71717a' }}
+                  axisLine={{ stroke: '#e4e4e7' }}
                   domain={[0, 100]}
                 />
                 <Tooltip 
                   contentStyle={{
                     backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
+                    border: '1px solid #e4e4e7',
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                   }}
@@ -281,68 +348,6 @@ const StudentDetail = () => {
           </div>
         </div>
       </div>
-      {/* Risk Factors */}
-      {getRiskFactors().length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-8 py-6 border-b border-gray-200 bg-red-50">
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center">
-              <AlertTriangle className="h-6 w-6 mr-3 text-red-600" />
-              Risk Factors
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">Areas requiring attention</p>
-          </div>
-          <div className="p-8">
-            <div className="grid gap-4">
-              {getRiskFactors().map((factor, idx) => (
-                <div key={idx} className="flex items-start space-x-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <factor.icon className={`h-6 w-6 ${
-                      factor.severity === 'high' ? 'text-red-500' : 
-                      factor.severity === 'warning' ? 'text-amber-500' : 'text-orange-500'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{factor.text}</h4>
-                    <p className="text-sm text-gray-600 mt-1">{factor.description}</p>
-                  </div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    factor.severity === 'high' ? 'bg-red-100 text-red-700' : 
-                    factor.severity === 'warning' ? 'bg-amber-100 text-amber-700' : 'bg-orange-100 text-orange-700'
-                  }`}>
-                    {factor.severity.charAt(0).toUpperCase() + factor.severity.slice(1)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Suggested Actions */}
-      {getSuggestions().length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-8 py-6 border-b border-gray-200 bg-blue-50">
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center">
-              <User className="h-6 w-6 mr-3 text-blue-600" />
-              Recommended Actions
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">Suggested interventions for mentors</p>
-          </div>
-          <div className="p-8">
-            <div className="space-y-4">
-              {getSuggestions().map((suggestion, idx) => (
-                <div key={idx} className="flex items-start space-x-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-gray-800 leading-relaxed">{suggestion}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

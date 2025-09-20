@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Users, Eye, EyeOff, X, Trash2 } from 'lucide-react';
 import { registerUser, removeUser, userList, sendfile } from '../../api/auth';
+import { LightButton, DarkButton } from '../../components/index';
 
 function generateRandomPassword(length = 12) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
@@ -144,15 +145,15 @@ const AddUser = () => {
           {/* Attendance Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
+              <label className="text-sm font-medium text-zinc-800 w-full text-start group relative cursor-help">
                 Attendance Google Sheet link
-                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-zinc-200 text-zinc-800 text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
                   <p className="font-semibold mb-2">Required Fields:</p>
                   <ul className="list-disc list-inside">
                     <li>Student ID</li>
                     <li>Attendance Percentage</li>
                   </ul>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-zinc-200"></div>
                 </div>
               </label>
               
@@ -173,18 +174,18 @@ const AddUser = () => {
             />
           </div>
           {/* Fees Google Sheet */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
+          <div className="bg-white rounded-lg border border-zinc-300 p-6">
+            <div className="flex items-center justify-center mb-3">
+              <label className="text-sm font-medium text-zinc-800 w-full text-start group relative cursor-help">
                 Fees Google Sheet link
-                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-zinc-200 text-zinc-800 text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
                   <p className="font-semibold mb-2">Required Fields:</p>
                   <ul className="list-disc list-inside">
                     <li>Student ID</li>
                     <li>Pending Fees</li>
                     <li>Family Income</li>
                   </ul>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-zinc-200"></div>
                 </div>
               </label>
               
@@ -205,11 +206,11 @@ const AddUser = () => {
             />
           </div>
           {/* Marksheet Google Sheet */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-zinc-300 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
+              <label className="text-sm font-medium text-gray-700 w-full text-start group relative cursor-help">
                 Marksheet Google Sheet link
-                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-zinc-200 text-zinc-800 text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
                   <p className="font-semibold mb-2">Required Fields:</p>
                   <ul className="list-disc list-inside">
                     <li>Student ID</li>
@@ -217,7 +218,7 @@ const AddUser = () => {
                     <li>Test Score 2</li>
                     <li>Test Score 3</li>
                   </ul>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-zinc-200"></div>
                 </div>
               </label>
               
@@ -234,15 +235,15 @@ const AddUser = () => {
               value={marksheetLink}
               onChange={(e) => setMarksheetLink(e.target.value)}
               placeholder="Enter Google Sheets link"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
           {/* Student Details Link Only */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-zinc-300 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
+              <label className="text-sm font-medium text-gray-700 w-full text-start group relative cursor-help">
                 StudentDetail Sheet link
-                <div className="hidden group-hover:block absolute z-10 w-55 p-2 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                <div className="hidden group-hover:block absolute z-10 w-55 p-2 bg-zinc-200 text-zinc-800 text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
                   <p className="font-semibold mb-2">Required Fields:</p>
                   <ul className="list-disc list-inside">
                     <li>Student ID</li>
@@ -253,7 +254,7 @@ const AddUser = () => {
                     <li>Department</li>
                    
                   </ul>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-zinc-200"></div>
                 </div>
               </label>
               
@@ -293,7 +294,7 @@ const AddUser = () => {
         {/* Add Admin Button */}
         <button 
           onClick={() => setShowAddAdminForm(true)}
-          className="bg-blue-700 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm "
+          className="bg-zinc-800 hover:bg-zinc-900 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm "
         >
           Add admin
         </button>
@@ -302,7 +303,7 @@ const AddUser = () => {
       {/* Add Admin Form Modal */}
       {showAddAdminForm && (
         <>
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-40"></div>
+          <div className="fixed inset-0 bg-zinc-50 bg-opacity-30 backdrop-blur-sm z-40"></div>
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-x-auto">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-x-auto">
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -416,19 +417,15 @@ const AddUser = () => {
                 </div>
                 
                 <div className="flex items-center justify-end space-x-3">
-                  <button
-                    type="button"
+                  <LightButton
+                    text="Cancel"
                     onClick={handleCancel}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md font-medium transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition-colors"
-                  >
-                    Send Password
-                  </button>
+                    className="justify-center"
+                    />
+                  <DarkButton
+                    text="Send Password"
+                    className="justify-center"
+                  />
                 </div>
               </form>
             </div>

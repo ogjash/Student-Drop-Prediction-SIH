@@ -230,7 +230,7 @@ const Logo = ({ animate, setAnimate }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="font-medium whitespace-pre text-zinc-800 dark:text-white truncate">
-          ImpactCrew
+          MentorSignal
         </motion.span>
       </Link>
       {/* Pin/Unpin button - hide on mobile, show on lg+ */}

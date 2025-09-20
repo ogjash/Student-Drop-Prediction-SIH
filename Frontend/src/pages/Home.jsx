@@ -83,7 +83,7 @@ const Home = () => {
       icon: <Shield className="size-5" />,
     },
     {
-      title: "Counseling Tracker",
+      title: "Counselling Tracker",
       description: "Logs counseling sessions and follow-ups, helping educators monitor student progress and ensure accountability across interventions.",
       icon: <Star className="size-5" />,
     },

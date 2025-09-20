@@ -119,8 +119,8 @@ const Alerts = () => {
       try {
         const refreshResponse = await refreshPrediction();
         if (refreshResponse.data) {
-          setStudents(refreshResponse.data.mergedData  []);
-          setDropoutRates(refreshResponse.data.dropoutRate  []);
+          setStudents(refreshResponse.data.mergedData || []);
+          setDropoutRates(refreshResponse.data.dropoutRate || []);
           return; 
         }
         await fetchBackendData(); // Only fetch if refresh didn't return data

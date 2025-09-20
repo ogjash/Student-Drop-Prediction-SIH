@@ -27,7 +27,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="text-xl font-bold text-zinc-800">
-            ImpactCrew
+            MentorSignal
           </Link>
           
           <div className="hidden md:block">
@@ -69,14 +69,6 @@ const Navbar = () => {
                 className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-md transition-colors">
                 Features
               </button>
-              <button onClick={() => scrollToSection('impact')} 
-                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-md transition-colors">
-                Impact
-              </button>
-              <NavLink to="/about" onClick={closeMobile} 
-                className={({ isActive }) => `block px-3 py-2 rounded-md transition-colors ${isActive ? 'text-[#1c1d1f]' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'}`}>
-                About
-              </NavLink>
               
               <div className="pt-4 px-3 space-y-3 space-x-3 border-t border-zinc-300">
                 <DarkButton 
