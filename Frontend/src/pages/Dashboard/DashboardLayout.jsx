@@ -113,13 +113,13 @@ const DashboardLayout = () => {
       {/* Mobile Sidebar Overlay */}
       {open && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-zinc-50 bg-opacity-50 z-40 md:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
-        <SidebarBody className="justify-between gap-6">
+        <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
             <div className="hidden md:block">
               {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
@@ -161,10 +161,10 @@ const DashboardLayout = () => {
         "flex-1 transition-all duration-300",
         // When animate is true (unpinned): responsive sidebar behavior
         animate ? (
-          open ? "ml-0 md:ml-[200px]" : "ml-0 md:ml-[48px]"
+          open ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[60px]"
         ) : (
           // When animate is false (pinned): always show full sidebar
-          "ml-0 md:ml-[200px]"
+          "ml-0 md:ml-[300px]"
         )
       )}>
         <DashboardContent animate={animate} open={open} />

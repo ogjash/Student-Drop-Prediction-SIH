@@ -181,61 +181,74 @@ const Alerts = () => {
   return (
     <div className="space-y-8 w-full">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+      <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Student Risk Alerts
           </h1>
-          <p className="text-gray-600 mt-2">Monitor and send notifications to students requiring attention</p>
+          <p className="text-sm sm:text-base text-gray-600">Monitor and send notifications to students requiring attention</p>
         </div>
-        <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-          <select
-            value={severityFilter}
-            onChange={(e) => setSeverityFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-          >
-            <option value="all">All Students</option>
-            <option value="high">High Risk</option>
-            <option value="medium">Medium Risk</option>
-          </select>
-          <button
-            onClick={handleRefreshAlerts}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </button>
-          <button
-            onClick={handleNotifyAll}
-            disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0}
-            className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            Notify All At-Risk
-          </button>
-          <span className="inline-flex items-center px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-sm font-medium">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            {filteredAlerts.filter(a => !a.resolved).length} students need attention
-          </span>
+        
+        {/* Controls Section */}
+        <div className="flex flex-col sm:flex-row gap-3 lg:items-center">
+          {/* Filter and Refresh Row */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <select
+              value={severityFilter}
+              onChange={(e) => setSeverityFilter(e.target.value)}
+              className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+            >
+              <option value="all">All Students</option>
+              <option value="high">High Risk</option>
+              <option value="medium">Medium Risk</option>
+            </select>
+            <button
+              onClick={handleRefreshAlerts}
+              className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Refresh</span>
+              <span className="sm:hidden">Refresh</span>
+            </button>
+          </div>
+          
+          {/* Action Buttons Row */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleNotifyAll}
+              disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0}
+              className="inline-flex items-center justify-center px-3 sm:px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Notify All At-Risk</span>
+              <span className="sm:hidden">Notify All</span>
+            </button>
+            <div className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-xs sm:text-sm font-medium">
+              <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
+              <span className="truncate">
+                {filteredAlerts.filter(a => !a.resolved).length} need attention
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Alert Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* High Risk Students */}
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 bg-red-50 border-b border-red-200">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
-              High Risk Students
+          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-red-50 border-b border-red-200">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mr-2 flex-shrink-0" />
+              <span className="truncate">High Risk Students</span>
             </h3>
           </div>
-          <div className="p-6 text-center">
-            <div className="text-4xl font-bold text-red-600 mb-2">
+          <div className="p-4 sm:p-6 text-center">
+            <div className="text-3xl sm:text-4xl font-bold text-red-600 mb-2">
               {filteredAlerts.filter(a => a.severity === 'high').length}
             </div>
-            <p className="text-sm text-gray-600">Requiring immediate attention</p>
-            <div className="mt-3 text-xs text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">Requiring immediate attention</p>
+            <div className="text-xs text-gray-500">
               Dropout rate {'>'} 70%
             </div>
           </div>
@@ -243,37 +256,37 @@ const Alerts = () => {
 
         {/* Medium Risk Students */}
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 bg-amber-50 border-b border-amber-200">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <Clock className="h-5 w-5 text-amber-500 mr-2" />
-              Medium Risk Students
+          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-amber-50 border-b border-amber-200">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500 mr-2 flex-shrink-0" />
+              <span className="truncate">Medium Risk Students</span>
             </h3>
           </div>
-          <div className="p-6 text-center">
-            <div className="text-4xl font-bold text-amber-600 mb-2">
+          <div className="p-4 sm:p-6 text-center">
+            <div className="text-3xl sm:text-4xl font-bold text-amber-600 mb-2">
               {filteredAlerts.filter(a => a.severity === 'medium').length}
             </div>
-            <p className="text-sm text-gray-600">Requiring monitoring</p>
-            <div className="mt-3 text-xs text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">Requiring monitoring</p>
+            <div className="text-xs text-gray-500">
               Dropout rate 40-70%
             </div>
           </div>
         </div>
 
         {/* Pending Notifications */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 bg-blue-50 border-b border-blue-200">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
-              Pending Notifications
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden sm:col-span-2 lg:col-span-1">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-blue-50 border-b border-blue-200">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+              <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 mr-2 flex-shrink-0" />
+              <span className="truncate">Pending Notifications</span>
             </h3>
           </div>
-          <div className="p-6 text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">
+          <div className="p-4 sm:p-6 text-center">
+            <div className="text-3xl sm:text-4xl font-bold text-blue-600 mb-2">
               {filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length}
             </div>
-            <p className="text-sm text-gray-600">Awaiting notification</p>
-            <div className="mt-3 text-xs text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">Awaiting notification</p>
+            <div className="text-xs text-gray-500">
               Ready to alert mentors & guardians
             </div>
           </div>
@@ -282,12 +295,12 @@ const Alerts = () => {
 
       {/* Alert List */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <h3 className="text-lg font-semibold text-gray-900">At-Risk Students</h3>
             <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-600">
+              <Filter className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm text-gray-600">
                 Showing {filteredAlerts.length} students requiring alerts
               </span>
             </div>
@@ -307,16 +320,17 @@ const Alerts = () => {
               return (
                 <div
                   key={alert.id}
-                  className={`p-6 hover:bg-gray-50 transition-colors duration-200 ${
+                  className={`p-4 sm:p-6 hover:bg-gray-50 transition-colors duration-200 ${
                     selectedAlert === alert.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                   }`}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-3">
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    <div className="flex-1 space-y-3">
+                      {/* Status and Type Row */}
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         {getSeverityIcon(severity)}
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getSeverityColor(severity)}`}
+                          className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-semibold border ${getSeverityColor(severity)}`}
                         >
                           {severity.toUpperCase()}
                         </span>
@@ -324,21 +338,30 @@ const Alerts = () => {
                           {alert.type}
                         </span>
                         <div className="flex items-center text-xs text-gray-500">
-                          <Calendar className="h-3 w-3 mr-1" />
-                          {formatDate(alert.created)}
+                          <Calendar className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="hidden sm:inline">{formatDate(alert.created)}</span>
+                          <span className="sm:hidden">{new Date(alert.created).toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3 mb-2">
-                        <User className="h-4 w-4 text-gray-400" />
-                        <h4 className="font-semibold text-gray-900 text-lg">
-                          {student?.name}
-                        </h4>
-                        <span className="text-sm text-gray-500">
+                      
+                      {/* Student Info */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                        <div className="flex items-center space-x-2">
+                          <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                          <h4 className="font-semibold text-gray-900 text-base sm:text-lg">
+                            {student?.name}
+                          </h4>
+                        </div>
+                        <span className="text-sm text-gray-500 ml-6 sm:ml-0">
                           {student?.department} • {student?.class}
                         </span>
                       </div>
-                      <p className="text-gray-700 mb-3 leading-relaxed">{alert.message}</p>
-                      <div className="flex items-center space-x-4 text-sm">
+                      
+                      {/* Alert Message */}
+                      <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{alert.message}</p>
+                      
+                      {/* Stats Row */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
                         <span className="text-gray-500">
                           Dropout Risk: <span className="font-medium text-red-600">
                             {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) + '%' : 'N/A'}
@@ -360,17 +383,20 @@ const Alerts = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3 ml-6">
+                    
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:ml-6">
                       <button
                         onClick={() => handleSendNotification(alert.id)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                        className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                       >
                         <Send className="h-4 w-4 mr-2" />
-                        Notify
+                        <span className="hidden sm:inline">Notify</span>
+                        <span className="sm:hidden">Notify</span>
                       </button>
                       <button
                         onClick={() => setSelectedAlert(selectedAlert === alert.id ? null : alert.id)}
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                        className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                       >
                         <Eye className="h-4 w-4 mr-2" />
                         {selectedAlert === alert.id ? 'Hide' : 'Details'}
@@ -378,71 +404,85 @@ const Alerts = () => {
                     </div>
                   </div>
                   {selectedAlert === alert.id && (
-                    <div className="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                      <h5 className="font-semibold text-gray-900 mb-4 flex items-center">
-                        <User className="h-5 w-5 mr-2 text-gray-600" />
+                    <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-gray-50 rounded-lg border border-gray-200">
+                      <h5 className="font-semibold text-gray-900 mb-4 flex items-center text-sm sm:text-base">
+                        <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-gray-600 flex-shrink-0" />
                         Detailed Student Information
                       </h5>
                       {student && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                          <div className="space-y-2">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Department:</span>
-                              <span className="font-medium">{student.department}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Class:</span>
-                              <span className="font-medium">{student.class}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Year:</span>
-                              <span className="font-medium">{student.year}</span>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Attendance:</span>
-                              <span className={`font-medium ${
-                                student.attendance_percentage >= 85 ? 'text-emerald-600' : 
-                                student.attendance_percentage >= 70 ? 'text-amber-600' : 'text-red-600'
-                              }`}>
-                                {student.attendance_percentage}%
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Test 1:</span>
-                              <span className="font-medium">{student.test_score_1}%</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Test 2:</span>
-                              <span className="font-medium">{student.test_score_2}%</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Test 3:</span>
-                              <span className="font-medium">{student.test_score_3}%</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 text-sm">
+                          {/* Academic Info */}
+                          <div className="space-y-3">
+                            <h6 className="font-medium text-gray-900 text-xs uppercase tracking-wide border-b border-gray-200 pb-1">Academic Info</h6>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Department:</span>
+                                <span className="font-medium text-right">{student.department}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Class:</span>
+                                <span className="font-medium text-right">{student.class}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Year:</span>
+                                <span className="font-medium text-right">{student.year}</span>
+                              </div>
                             </div>
                           </div>
-                          <div className="space-y-2">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Average Score:</span>
-                              <span className={`font-medium ${
-                                ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 80 ? 'text-emerald-600' : 
-                                ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 60 ? 'text-amber-600' : 'text-red-600'
-                              }`}>
-                                {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
-                              </span>
+                          
+                          {/* Performance Metrics */}
+                          <div className="space-y-3">
+                            <h6 className="font-medium text-gray-900 text-xs uppercase tracking-wide border-b border-gray-200 pb-1">Performance</h6>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Attendance:</span>
+                                <span className={`font-medium text-right ${
+                                  student.attendance_percentage >= 85 ? 'text-emerald-600' : 
+                                  student.attendance_percentage >= 70 ? 'text-amber-600' : 'text-red-600'
+                                }`}>
+                                  {student.attendance_percentage}%
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Test 1:</span>
+                                <span className="font-medium text-right">{student.test_score_1}%</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Test 2:</span>
+                                <span className="font-medium text-right">{student.test_score_2}%</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Test 3:</span>
+                                <span className="font-medium text-right">{student.test_score_3}%</span>
+                              </div>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Fee Status:</span>
-                              <span className={`font-medium ${student.Pending_Fees === 1 ? 'text-red-600' : 'text-emerald-600'}`}>
-                                {student.Pending_Fees === 1 ? 'Pending' : 'Paid'}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Dropout Risk:</span>
-                              <span className="font-semibold text-red-600">
-                                {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) + '%' : 'N/A'}
-                              </span>
+                          </div>
+                          
+                          {/* Risk Assessment */}
+                          <div className="space-y-3 sm:col-span-2 xl:col-span-1">
+                            <h6 className="font-medium text-gray-900 text-xs uppercase tracking-wide border-b border-gray-200 pb-1">Risk Assessment</h6>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Average Score:</span>
+                                <span className={`font-medium text-right ${
+                                  ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 80 ? 'text-emerald-600' : 
+                                  ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 60 ? 'text-amber-600' : 'text-red-600'
+                                }`}>
+                                  {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Fee Status:</span>
+                                <span className={`font-medium text-right ${student.Pending_Fees === 1 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                  {student.Pending_Fees === 1 ? 'Pending' : 'Paid'}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Dropout Risk:</span>
+                                <span className="font-semibold text-red-600 text-right">
+                                  {typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) + '%' : 'N/A'}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
