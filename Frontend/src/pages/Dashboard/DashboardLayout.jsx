@@ -106,7 +106,7 @@ const DashboardLayout = () => {
       "min-h-screen"
     )}>
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-6">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
             {(open || !animate) ? <Logo animate={animate} setAnimate={setAnimate} /> : <LogoIcon />}
             <div className="mt-10 flex flex-col gap-2">
@@ -146,10 +146,10 @@ const DashboardLayout = () => {
         "flex-1 transition-all duration-300",
         // When animate is true (unpinned): responsive sidebar behavior
         animate ? (
-          open ? "ml-0 md:ml-[300px]" : "ml-0 md:ml-[60px]"
+          open ? "ml-0 md:ml-[200px]" : "ml-0 md:ml-[48px]"
         ) : (
           // When animate is false (pinned): always show full sidebar
-          "ml-0 md:ml-[300px]"
+          "ml-0 md:ml-[200px]"
         )
       )}>
         <DashboardContent animate={animate} open={open} />

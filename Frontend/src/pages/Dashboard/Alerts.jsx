@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Clock, CheckCircle, Send, Eye, RefreshCw, Filter, Bell, Calendar, User } from 'lucide-react';
-import { predictDropout } from '../../api/auth';
+import { predictDropout,refreshPrediction } from '../../api/auth';
 
 const Alerts = () => {
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -112,8 +112,14 @@ const Alerts = () => {
     }
   };
 
-  const handleRefreshAlerts = () => {
-    fetchBackendData();
+  const handleRefreshAlerts = async () => {
+    setLoading(true);
+    try {
+      await refreshPrediction();
+    } catch (error) {
+      console.error('Failed to refresh prediction:', error);
+    }
+    await fetchBackendData();
   };
 
   const generatedAlerts = students.map((student, idx) => {

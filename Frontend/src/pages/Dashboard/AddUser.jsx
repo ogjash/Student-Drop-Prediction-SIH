@@ -144,8 +144,16 @@ const AddUser = () => {
           {/* Attendance Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center">
+              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
                 Attendance Google Sheet link
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                  <p className="font-semibold mb-2">Required Fields:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Student ID</li>
+                    <li>Attendance Percentage</li>
+                  </ul>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                </div>
               </label>
               
               <input
@@ -167,8 +175,17 @@ const AddUser = () => {
           {/* Fees Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center">
+              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
                 Fees Google Sheet link
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                  <p className="font-semibold mb-2">Required Fields:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Student ID</li>
+                    <li>Pending Fees</li>
+                    <li>Family Income</li>
+                  </ul>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                </div>
               </label>
               
               <input
@@ -190,8 +207,18 @@ const AddUser = () => {
           {/* Marksheet Google Sheet */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center">
+              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
                 Marksheet Google Sheet link
+                <div className="hidden group-hover:block absolute z-10 w-55 p-4 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                  <p className="font-semibold mb-2">Required Fields:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Student ID</li>
+                    <li>Test Score 1</li>
+                    <li>Test Score 2</li>
+                    <li>Test Score 3</li>
+                  </ul>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                </div>
               </label>
               
               <input
@@ -213,8 +240,21 @@ const AddUser = () => {
           {/* Student Details Link Only */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-center">
-                Student Detail Google Sheet link
+              <label className="text-sm font-medium text-gray-700 w-full text-center group relative cursor-help">
+                StudentDetail Sheet link
+                <div className="hidden group-hover:block absolute z-10 w-55 p-2 bg-black text-white text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
+                  <p className="font-semibold mb-2">Required Fields:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Student ID</li>
+                    <li>Name</li>
+                    <li>Email</li>
+                    <li>Phone</li>
+                  
+                    <li>Department</li>
+                   
+                  </ul>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-black"></div>
+                </div>
               </label>
               
               <input
@@ -222,7 +262,7 @@ const AddUser = () => {
                 accept=".csv,.xlsx,.xls"
                 className="hidden"
                 ref={studentDetailsFileRef}
-                onChange={e => handleFileChange(e, 'Marksheet')}
+                onChange={e => handleFileChange(e, 'Student Details')}
               />
             </div>
             <input
