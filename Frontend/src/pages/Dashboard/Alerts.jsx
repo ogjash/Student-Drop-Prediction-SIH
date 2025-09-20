@@ -115,13 +115,22 @@ const Alerts = () => {
   };
 
   const handleRefreshAlerts = async () => {
-    setLoading(true);
-    try {
-      await refreshPrediction();
-    } catch (error) {
-      console.error('Failed to refresh prediction:', error);
-    }
-    await fetchBackendData();
+      setLoading(true);
+      try {
+        const refreshResponse = await refreshPrediction();
+        if (refreshResponse.data) {
+          setStudents(refreshResponse.data.mergedData  []);
+          setDropoutRates(refreshResponse.data.dropoutRate  []);
+          return; 
+        }
+        await fetchBackendData(); // Only fetch if refresh didn't return data
+      } catch (error) {
+        console.error('Failed to refresh prediction:', error);
+        const errorMessage = error.response?.data?.message || 'Failed to refresh predictions';
+        console.log(errorMessage);
+      } finally {
+        setLoading(false);
+      }
   };
 
   const generatedAlerts = students.map((student, idx) => {
