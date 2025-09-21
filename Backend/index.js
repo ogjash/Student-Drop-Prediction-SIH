@@ -8,6 +8,7 @@ import { corsConfig } from './config/corsConfig.js';
 import authRoutes from './routes/auth.routes.js';
 import adminRoutes from './routes/admin.route.js';
 import ownerRoutes from './routes/owner.routes.js';
+import cronjobsRoutes from './routes/cronjobs.route.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/owner', ownerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/cronjobs', cronjobsRoutes);
 
 connectDB();
 app.listen(port, () => {
