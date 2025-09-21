@@ -282,13 +282,11 @@ const AddUser = () => {
           </div>
         {/* Upload Button below the links section */}
         <div className="flex justify-end mb-4 right-0">
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
+          <LightButton
+            text="Upload"
+            className="justify-center"
             onClick={handleUploadLinks}
-          >
-            Upload
-          </button>
+          />
         </div>
         </div>
         {/* Add Admin Button */}

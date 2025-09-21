@@ -180,7 +180,7 @@ const DepartmentAnalysisChart = ({ students, dropoutRates }) => {
         </div>
       </div>
       
-      <div className="h-64 sm:h-72 md:h-80 mb-3 sm:mb-4">
+      <div className="h-64 sm:h-72 md:h-80 mt-20">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
@@ -246,7 +246,7 @@ const DepartmentAnalysisChart = ({ students, dropoutRates }) => {
         </ResponsiveContainer>
       </div>
       
-      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center pt-3 sm:pt-4 border-t border-slate-100">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center pt-1 border-t border-slate-100">
         <div className="flex items-center space-x-1 sm:space-x-2">
           <div className="w-3 sm:w-4 h-3 sm:h-4 bg-gradient-to-r from-rose-500 to-red-600 rounded-sm"></div>
           <span className="text-xs sm:text-sm font-medium text-slate-700">High Risk</span>

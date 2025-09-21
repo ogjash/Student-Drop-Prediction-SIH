@@ -187,7 +187,7 @@ const Reports = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-zinc-500">Report Period</p>
-              <p className="text-2xl font-bold text-zinc-800">Biweekly</p>
+              <p className="text-2xl font-bold text-zinc-800">15 Days</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
               <Calendar className="h-6 w-6 text-blue-600" />

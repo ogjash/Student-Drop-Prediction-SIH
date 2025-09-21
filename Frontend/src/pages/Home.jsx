@@ -252,21 +252,21 @@ const Home = () => {
         </DotBackground>
       </section>
 
-      <section id="features" className="flex items-center justify-center w-full py-12 md:py-20 lg:py-32 px-2 sm:px-4 max-w-full overflow-x-hidden bg-zinc-100">
-        <div className="container max-w-full px-0 sm:px-4">
+      <section id="features" className="flex items-center justify-center w-full py-12 md:py-20 lg:py-32 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 max-w-full overflow-x-hidden bg-zinc-100">
+        <div className="container max-w-7xl px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             viewport={{ once: false, margin: "-100px", amount: 0.4 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col items-center justify-center space-y-4 text-center mb-8 md:mb-12"
+            className="flex flex-col items-center justify-center space-y-4 text-center mb-8 md:mb-12 lg:mb-16"
           >
             <Badge className="rounded-full px-4 py-1.5 text-sm font-medium bg-zinc-200" variant="secondary">
               Features
             </Badge>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight px-4 text-zinc-800">Smart, simple, and effective.</h2>
-            <p className="max-w-[800px] text-base md:text-lg px-4 text-zinc-500">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-800">Smart, simple, and effective.</h2>
+            <p className="max-w-[800px] text-base md:text-lg text-zinc-500">
               Our dashboard combines data, prediction, and alerts into simple, powerful features that empower educators to act early and effectively.
             </p>
           </motion.div>
@@ -277,7 +277,7 @@ const Home = () => {
             whileInView="show"
             exit="hidden"
             viewport={{ once: false }}
-            className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-full"
+            className="grid gap-4 md:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto"
           >
             {features.map((feature, i) => (
               <motion.div key={i} variants={item}>

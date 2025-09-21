@@ -31,7 +31,7 @@ const Navbar = () => {
           </Link>
           
           <div className="hidden md:block">
-            <div className="flex items-center space-x-8">
+            <div className="flex  items-center space-x-8">
               <button onClick={() => scrollToSection('problem')} className="text-zinc-500 hover:text-zinc-800">Problem</button>
               <button onClick={() => scrollToSection('solution')} className="text-zinc-500 hover:text-zinc-800">Our Solution</button>
               <button onClick={() => scrollToSection('features')} className="text-zinc-500 hover:text-zinc-800">Features</button>
@@ -58,15 +58,15 @@ const Navbar = () => {
           <div className="bg-zinc-50 rounded-lg shadow-lg border border-zinc-300 py-4">
             <div className="px-4 py-3 space-y-4">
               <button onClick={() => scrollToSection('problem')} 
-                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-md transition-colors">
+                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800  rounded-md transition-colors">
                 Problem
               </button>
               <button onClick={() => scrollToSection('solution')} 
-                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-md transition-colors">
+                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800  rounded-md transition-colors">
                 Our Solution
               </button>
               <button onClick={() => scrollToSection('features')} 
-                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-md transition-colors">
+                className="block w-full text-left px-3 py-2 text-zinc-500 hover:text-zinc-800 rounded-md transition-colors">
                 Features
               </button>
               

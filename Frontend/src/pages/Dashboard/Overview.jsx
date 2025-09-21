@@ -5,6 +5,7 @@ import {StatsCard, RiskTable} from '../../components/index';
 import { getAndStorePrediction } from '../../data/mockData';
 import { useEffect, useState } from 'react';
 import { OverviewSkeleton } from '../../components/ui/Skeleton';
+import { LightButton } from '../../components/index'
 
 // Import chart components
 import DropoutRiskChart from '../../components/dashboard/Charts/DropoutRiskChart';
@@ -101,12 +102,11 @@ const Overview = () => {
       ) : (
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="text-lg font-semibold text-zinc-500">No data available.</div>
-          <button
-            className="px-4 py-2 bg-blue-600 text-zinc-50 rounded hover:bg-blue-700 transition"
+          <LightButton
+            text="Upload Data"
+            className="justify-center"
             onClick={() => navigate('/dashboard/add-user')}
-          >
-            Upload Data
-          </button>
+            />
         </div>
       )}
 

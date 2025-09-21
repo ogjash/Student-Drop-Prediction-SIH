@@ -99,8 +99,8 @@ const DropoutRiskChart = ({ students, dropoutRates }) => {
               data={chartData}
               cx="50%"
               cy="50%"
-              outerRadius="45%"
-              innerRadius="25%"
+              outerRadius="70%"
+              innerRadius="40%"
               paddingAngle={3}
               dataKey="value"
               stroke="#ffffff"
