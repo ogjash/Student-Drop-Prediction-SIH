@@ -110,23 +110,59 @@ const Reports = () => {
 
   // Calculate risk distribution from backend data
   const calculateRiskDistribution = () => {
-    if (!backendData || !backendData.students) {
+    if (!backendData || !backendData.students || !backendData.dropoutRate) {
       return [
-        { name: 'Safe', value: 0, color: '#10b981' },
-        { name: 'Warning', value: 0, color: '#f59e0b' },
-        { name: 'High Risk', value: 0, color: '#ef4444' },
+        { name: 'Low Risk', value: 0, color: '#10b981', count: 0, percentage: 0 },
+        { name: 'Medium Risk', value: 0, color: '#f59e0b', count: 0, percentage: 0 },
+        { name: 'High Risk', value: 0, color: '#ef4444', count: 0, percentage: 0 },
       ];
     }
 
-    const total = backendData.students.length;
-    const highRisk = backendData.students.filter(s => (s.dropoutRate || 0) >= 50).length;
-    const warning = backendData.students.filter(s => (s.dropoutRate || 0) >= 30 && (s.dropoutRate || 0) < 50).length;
-    const safe = total - highRisk - warning;
+    const students = backendData.students;
+    const dropoutRates = backendData.dropoutRate;
+    const total = students.length;
+    
+    let highRiskCount = 0;
+    let mediumRiskCount = 0;
+    let lowRiskCount = 0;
+
+    students.forEach((student, index) => {
+      // Get dropout rate from the dropoutRate array or fallback to student property
+      const dropoutRate = Array.isArray(dropoutRates) && dropoutRates.length > index 
+        ? dropoutRates[index] 
+        : (student.dropoutRate || 0);
+      
+      if (dropoutRate > 70) {
+        highRiskCount++;
+      } else if (dropoutRate > 40) {
+        mediumRiskCount++;
+      } else {
+        lowRiskCount++;
+      }
+    });
 
     return [
-      { name: 'Safe', value: safe, color: '#10b981' },
-      { name: 'Warning', value: warning, color: '#f59e0b' },
-      { name: 'High Risk', value: highRisk, color: '#ef4444' },
+      { 
+        name: 'Low Risk', 
+        value: lowRiskCount, 
+        color: '#10b981', 
+        count: lowRiskCount,
+        percentage: total > 0 ? ((lowRiskCount / total) * 100).toFixed(1) : 0
+      },
+      { 
+        name: 'Medium Risk', 
+        value: mediumRiskCount, 
+        color: '#f59e0b', 
+        count: mediumRiskCount,
+        percentage: total > 0 ? ((mediumRiskCount / total) * 100).toFixed(1) : 0
+      },
+      { 
+        name: 'High Risk', 
+        value: highRiskCount, 
+        color: '#ef4444', 
+        count: highRiskCount,
+        percentage: total > 0 ? ((highRiskCount / total) * 100).toFixed(1) : 0
+      },
     ];
   };
 
