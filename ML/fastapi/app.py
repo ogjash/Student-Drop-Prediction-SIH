@@ -24,6 +24,10 @@ class StudentData(BaseModel):
 class StudentBatch(BaseModel):
     mergedData: List[StudentData]
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Student Dropout ML Prediction API!"}
+
 @app.post("/predict")
 def predict(batch: StudentBatch):
     students = batch.mergedData

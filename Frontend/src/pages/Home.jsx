@@ -130,8 +130,8 @@ const Home = () => {
   ];
 
   return (
-    <div className="hero min-h-screen bg-zinc-50 flex flex-col items-center w-full max-w-full overflow-x-hidden">
-      <div className="text-center pt-16 md:pt-32 px-4 md:px-0 w-full max-w-full">
+    <div className="min-h-screen bg-zinc-50 flex flex-col items-center w-full max-w-full overflow-x-hidden">
+      <div className="hero text-center pt-16 md:pt-32 px-4 md:px-0 w-screen">
           <MovingButton
             borderRadius="1.75rem"
             className="mb-4 rounded-full px-4 py-1.5 bg-zinc-50 text-zinc-800 border-zinc-200"
@@ -151,13 +151,12 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="tabs w-full max-w-full overflow-x-hidden relative">
+      <div className="tabs w-screen h-120 sm:h-135 md:h-150 lg:h-200 xl:h-230 overflow-x-hidden relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-50/30 to-zinc-50 pointer-events-none z-10"></div>
         <TabsDemo />
-        <div className="w-full h-px bg-zinc-200 my-8 relative z-20" />
       </div>
-
-      <section id="quote" className="h-200 w-full grid place-content-center sticky top-0">
+      <div className="w-full h-px bg-zinc-300"></div>
+      <section id="quote" className="h-150 lg:h-200 w-full grid place-content-center sticky top-0">
         <TextHighlight className="max-w-5xl text-3xl sm:text-4xl md:text-5xl lg:text-7xl px-8 font-bold text-center tracking-tight leading-[120%]">
           "All of us do not have equal talent, but all of us should have an equal opportunity to develop our talents."
         </TextHighlight>

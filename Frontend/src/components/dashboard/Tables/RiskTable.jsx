@@ -79,26 +79,26 @@ const getRiskColor = (level) => {
       };
   }
 };  return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-        <div className="flex items-center justify-between">
+    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden">
+      <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900">Student Risk Assessment</h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Student Risk Assessment</h3>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
               Showing {startIndex + 1}-{Math.min(endIndex, students.length)} of {students.length} students
             </p>
           </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
             <span className="flex items-center">
-              <div className="w-3 h-3 bg-red-200 rounded-full mr-2"></div>
+              <div className="w-2 sm:w-3 h-2 sm:h-3 bg-red-200 rounded-full mr-1 sm:mr-2"></div>
               High Risk
             </span>
             <span className="flex items-center">
-              <div className="w-3 h-3 bg-amber-200 rounded-full mr-2"></div>
+              <div className="w-2 sm:w-3 h-2 sm:h-3 bg-amber-200 rounded-full mr-1 sm:mr-2"></div>
               Medium Risk
             </span>
             <span className="flex items-center">
-              <div className="w-3 h-3 bg-emerald-200 rounded-full mr-2"></div>
+              <div className="w-2 sm:w-3 h-2 sm:h-3 bg-emerald-200 rounded-full mr-1 sm:mr-2"></div>
               Low Risk
             </span>
           </div>
@@ -108,22 +108,22 @@ const getRiskColor = (level) => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Student Details
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="hidden sm:table-cell px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Class
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Attendance
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Performance
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Risk Level
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -144,15 +144,19 @@ const getRiskColor = (level) => {
               
               return (
               <tr key={student.student_id} className="hover:bg-gray-50 transition-colors duration-200">
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{student.name}</div>
-                      <div className="text-sm text-gray-500">ID: {student.student_id}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">ID: {student.student_id}</div>
+                      {/* Show class info on mobile when class column is hidden */}
+                      <div className="text-xs text-gray-400 sm:hidden mt-1">
+                        Class {student.class} - {student.department}
+                      </div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="hidden sm:table-cell px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
                     {
                       (() => {
@@ -163,19 +167,23 @@ const getRiskColor = (level) => {
                       })()
                     }
                   </div>
-                  <div className="text-sm text-gray-500">{student.department}</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{student.department}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                   <div className={`text-sm font-semibold ${attendanceStatus.color}`}>
                     {student.attendance_percentage}%
                   </div>
+                  {/* Show performance on mobile when performance column is hidden */}
+                  <div className="md:hidden text-xs text-gray-500 mt-1">
+                    Score: {avgScore}%
+                  </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="hidden md:table-cell px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                   <div className={`text-sm font-semibold ${scoreStatus.color}`}>
                     {avgScore}%
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                   {(() => {
                     let riskLevel = student.riskLevel;
                     if (!riskLevel) {
@@ -203,13 +211,14 @@ const getRiskColor = (level) => {
                     );
                   })()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
                   <button
                     onClick={() => onViewStudent && onViewStudent(student)}
                     className="text-blue-600 hover:text-blue-800 inline-flex items-center transition-colors duration-200"
                   >
-                    <Eye className="h-4 w-4 mr-1" />
-                    View
+                    <Eye className="h-3 sm:h-4 w-3 sm:w-4 mr-1" />
+                    <span className="hidden sm:inline">View</span>
+                    <span className="sm:hidden">•••</span>
                   </button>
                 </td>
               </tr>
@@ -221,23 +230,23 @@ const getRiskColor = (level) => {
       
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="text-xs sm:text-sm text-gray-700 order-2 sm:order-1">
               Page {currentPage} of {totalPages}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2 order-1 sm:order-2">
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 text-xs sm:text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
+                <ChevronLeft className="h-3 sm:h-4 w-3 sm:w-4 mr-0 sm:mr-1" />
+                <span className="hidden sm:inline">Previous</span>
               </button>
               
               {/* Page Numbers */}
-              <div className="flex space-x-1">
+              <div className="hidden sm:flex space-x-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNumber;
                   if (totalPages <= 5) {
@@ -254,7 +263,7 @@ const getRiskColor = (level) => {
                     <button
                       key={pageNumber}
                       onClick={() => handlePageClick(pageNumber)}
-                      className={`inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md transition-colors duration-200 ${
+                      className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 border text-xs sm:text-sm font-medium rounded-md transition-colors duration-200 ${
                         currentPage === pageNumber
                           ? 'border-blue-500 bg-blue-50 text-blue-600'
                           : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
@@ -269,10 +278,10 @@ const getRiskColor = (level) => {
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 text-xs sm:text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-3 sm:h-4 w-3 sm:w-4 ml-0 sm:ml-1" />
               </button>
             </div>
           </div>

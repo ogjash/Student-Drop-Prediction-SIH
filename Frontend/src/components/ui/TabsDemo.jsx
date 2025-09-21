@@ -3,11 +3,11 @@
 import { Tabs } from "./Tabs.jsx"
 
 // Import demo images
-import overviewImg from "../../assets/images/demo/overview.png"
-import studentsImg from "../../assets/images/demo/students.png"
-import detailsImg from "../../assets/images/demo/details.png"
-import reportImg from "../../assets/images/demo/report.png"
-import alertsImg from "../../assets/images/demo/alerts.png"
+import overviewImg from "../../assets/images/demo/overview.png";
+import studentsImg from "../../assets/images/demo/students.png";
+import detailsImg from "../../assets/images/demo/details.png";
+import reportImg from "../../assets/images/demo/reports.png";
+import alertsImg from "../../assets/images/demo/alerts.png";
 
 export function TabsDemo() {
   const tabs = [
@@ -16,7 +16,7 @@ export function TabsDemo() {
       value: "overview",
       content: (
         <div
-          className="w-full overflow-hidden relative h-auto min-h-[400px] rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+          className="w-full overflow-hidden relative h-fit min-h-[170px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] max-h-[80vh] rounded-xl sm:rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center p-1 sm:p-2 md:p-3">
           <OverviewContent />
         </div>
       ),
@@ -26,7 +26,7 @@ export function TabsDemo() {
       value: "students",
       content: (
         <div
-          className="w-full overflow-hidden relative h-auto min-h-[400px] rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+          className="w-full overflow-hidden relative h-fit min-h-[170px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] max-h-[80vh] rounded-xl sm:rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center p-1 sm:p-2 md:p-3">
           <StudentsContent />
         </div>
       ),
@@ -36,7 +36,7 @@ export function TabsDemo() {
       value: "details",
       content: (
         <div
-          className="w-full overflow-hidden relative h-auto min-h-[400px] rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+          className="w-full overflow-hidden relative h-fit min-h-[170px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] max-h-[80vh] rounded-xl sm:rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center p-1 sm:p-2 md:p-3">
           <DetailsContent />
         </div>
       ),
@@ -46,7 +46,7 @@ export function TabsDemo() {
       value: "reports",
       content: (
         <div
-          className="w-full overflow-hidden relative h-auto min-h-[400px] rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+          className="w-full overflow-hidden relative h-fit min-h-[170px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] max-h-[80vh] rounded-xl sm:rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center p-1 sm:p-2 md:p-3">
           <ReportsContent />
         </div>
       ),
@@ -56,16 +56,16 @@ export function TabsDemo() {
       value: "alerts",
       content: (
         <div
-          className="w-full overflow-hidden relative h-auto min-h-[400px] rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+          className="w-full overflow-hidden relative h-fit min-h-[170px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] max-h-[80vh] rounded-xl sm:rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center p-1 sm:p-2 md:p-3">
           <AlertsContent />
         </div>
       ),
-    }
+    },
   ];
 
   return (
     <div
-      className="h-auto min-h-[30rem] sm:min-h-[35rem] md:min-h-[45rem] lg:min-h-[55rem] xl:min-h-[60rem] [perspective:1000px] relative flex flex-col w-[95%] sm:w-[45rem] md:w-[60rem] lg:w-[80rem] xl:w-[90rem] max-w-full my-20 mx-auto">
+      className="h-fit min-h-[18rem] sm:min-h-[22rem] md:min-h-[30rem] lg:min-h-[35rem] xl:min-h-[40rem] max-h-[90vh] [perspective:1000px] relative flex flex-col w-[98%] sm:w-[90%] md:w-[85%] lg:w-[75rem] xl:w-[85rem] max-w-full my-6 sm:my-8 md:my-12 lg:my-16 mx-auto px-2 sm:px-4">
       <Tabs tabs={tabs} />
     </div>
   );
@@ -76,7 +76,7 @@ const OverviewContent = () => {
     <img
       src={overviewImg}
       alt="Overview dashboard"
-      className="max-w-full max-h-full object-contain p-3 rounded-xl"
+      className="max-w-full max-h-full object-contain object-center rounded-lg sm:rounded-xl"
     />
   );
 };
@@ -86,7 +86,7 @@ const StudentsContent = () => {
     <img
       src={studentsImg}
       alt="Students management"
-      className="max-w-full max-h-full object-contain p-3 rounded-xl"
+      className="max-w-full max-h-full object-contain object-center rounded-lg sm:rounded-xl"
     />
   );
 };
@@ -96,7 +96,7 @@ const DetailsContent = () => {
     <img
       src={detailsImg}
       alt="Student details"
-      className="max-w-full max-h-full object-contain p-3 rounded-xl"
+      className="max-w-full max-h-full object-contain object-center rounded-lg sm:rounded-xl"
     />
   );
 };
@@ -106,7 +106,7 @@ const ReportsContent = () => {
     <img
       src={reportImg}
       alt="Reports and analytics"
-      className="max-w-full max-h-full object-contain p-3 rounded-xl"
+      className="max-w-full max-h-full object-contain object-center rounded-lg sm:rounded-xl"
     />
   );
 };
@@ -116,7 +116,7 @@ const AlertsContent = () => {
     <img
       src={alertsImg}
       alt="Alerts and notifications"
-      className="max-w-full max-h-full object-contain p-3 rounded-xl"
+      className="max-w-full max-h-full object-contain object-center rounded-lg sm:rounded-xl"
     />
   );
 };

@@ -354,3 +354,24 @@ export const storeDataLinks = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+export const getDataLinks = async (req, res) => {
+    try {
+        const universityId = req.user.university;
+        if (!universityId) {
+            return res.status(400).json({ message: 'universityId is required' });
+        }
+        const university = await University.findById(universityId);
+        if (!university) {
+            return res.status(404).json({ message: 'University not found' });
+        }
+        res.json({
+            feesLink: university.feesLink || null,
+            attendanceLink: university.attendanceLink || null,
+            marksheetLink: university.marksheetLink || null,
+            studentDetailsLink: university.studentDetailsLink || null
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};

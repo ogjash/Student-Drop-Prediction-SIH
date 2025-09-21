@@ -65,7 +65,7 @@ export const Tabs = ({
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
                 className={cn(
-                  "relative py-3 md:py-5 px-5 md:px-10 border border-zinc-300 bg-zinc-50 hover:bg-zinc-100 text-zinc-600 hover:text-zinc-800 transition text-sm md:text-base",
+                  "relative py-1 md:py-5 px-5 md:px-10 border border-zinc-300 bg-zinc-50 hover:bg-zinc-100 text-zinc-600 hover:text-zinc-800 transition text-sm md:text-base",
                   "md:flex-1",
                   idx === 4 && "col-span-2 justify-self-center w-1/2", // Center the 5th item in mobile
                   active.value === tab.value

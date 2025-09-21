@@ -42,18 +42,18 @@ const DropoutRiskChart = ({ students, dropoutRates }) => {
       const data = payload[0];
       const percentage = ((data.value / students.length) * 100).toFixed(1);
       return (
-        <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-300 backdrop-blur-sm">
-          <div className="border-b border-zinc-300 pb-2 mb-3">
-            <p className="font-semibold text-zinc-800 text-base flex items-center">
+        <div className="bg-zinc-50 p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl border border-zinc-300 backdrop-blur-sm max-w-xs">
+          <div className="border-b border-zinc-300 pb-1 sm:pb-2 mb-2 sm:mb-3">
+            <p className="font-semibold text-zinc-800 text-sm sm:text-base flex items-center">
               <div 
-                className="w-3 h-3 rounded-full mr-2" 
+                className="w-2 sm:w-3 h-2 sm:h-3 rounded-full mr-1 sm:mr-2" 
                 style={{ backgroundColor: data.payload.color }}
               ></div>
               {data.name}
             </p>
             <p className="text-xs text-zinc-500 mt-1">Risk Level Distribution</p>
           </div>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
             <div className="flex justify-between items-center">
               <span className="text-zinc-600">Student Count:</span>
               <span className="font-semibold text-zinc-800">{data.value}</span>
@@ -70,15 +70,15 @@ const DropoutRiskChart = ({ students, dropoutRates }) => {
   };
 
   return (
-    <div className="bg-zinc-50 rounded-2xl border border-zinc-200 p-6 transition-all duration-300">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-zinc-50 rounded-xl sm:rounded-2xl border border-zinc-200 p-3 sm:p-4 md:p-6 transition-all duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6">
         <div>
-          <h3 className="text-xl font-bold text-zinc-800 mb-1">Dropout Risk Distribution</h3>
-          <p className="text-zinc-500 text-sm">Student distribution by risk level</p>
+          <h3 className="text-lg sm:text-xl font-bold text-zinc-800 mb-1">Dropout Risk Distribution</h3>
+          <p className="text-zinc-500 text-xs sm:text-sm">Student distribution by risk level</p>
         </div>
       </div>
       
-      <div className="h-80 mb-4">
+      <div className="h-64 sm:h-72 md:h-80 mb-3 sm:mb-4">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <defs>
@@ -99,8 +99,8 @@ const DropoutRiskChart = ({ students, dropoutRates }) => {
               data={chartData}
               cx="50%"
               cy="50%"
-              outerRadius={100}
-              innerRadius={50}
+              outerRadius="45%"
+              innerRadius="25%"
               paddingAngle={3}
               dataKey="value"
               stroke="#ffffff"
@@ -122,18 +122,18 @@ const DropoutRiskChart = ({ students, dropoutRates }) => {
         </ResponsiveContainer>
       </div>
       
-      <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-slate-100">
-        <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-gradient-to-r from-rose-500 to-red-600 rounded-sm"></div>
-          <span className="text-sm font-medium text-slate-700">High Risk</span>
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center pt-3 sm:pt-4 border-t border-slate-100">
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="w-3 sm:w-4 h-3 sm:h-4 bg-gradient-to-r from-rose-500 to-red-600 rounded-sm"></div>
+          <span className="text-xs sm:text-sm font-medium text-slate-700">High Risk</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-sm"></div>
-          <span className="text-sm font-medium text-slate-700">Medium Risk</span>
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="w-3 sm:w-4 h-3 sm:h-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-sm"></div>
+          <span className="text-xs sm:text-sm font-medium text-slate-700">Medium Risk</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-gradient-to-r from-emerald-400 to-green-500 rounded-sm"></div>
-          <span className="text-sm font-medium text-slate-700">Low Risk</span>
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="w-3 sm:w-4 h-3 sm:h-4 bg-gradient-to-r from-emerald-400 to-green-500 rounded-sm"></div>
+          <span className="text-xs sm:text-sm font-medium text-slate-700">Low Risk</span>
         </div>
       </div>
     </div>
