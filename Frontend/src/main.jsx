@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import Demo from './pages/Demo.jsx'
 import Signup from './pages/Auth/Signup.jsx'
 import Login from './pages/Auth/Login.jsx'
 import AuthLayout from './pages/Auth/AuthLayout'
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='' element={<Home/>} />
+      <Route path='demo' element={<Demo/>} />
       <Route path='auth' element={<AuthLayout />}>
         <Route path='signup' element={<Signup />} />
         <Route path='login' element={<Login />} />

@@ -3,6 +3,7 @@
 import React from 'react'
 import { DotBackground, MovingButton, TabsDemo, DarkButton, LightButton, Badge, Card, CardContent, TextHighlight } from '../components/index.js'
 import { motion } from "framer-motion"
+import { useNavigate } from 'react-router-dom'
 import {
   BadgeMinus,
   FileClock,
@@ -16,6 +17,8 @@ import {
 } from "lucide-react"
 
 const Home = () => {
+  const navigate = useNavigate()
+  
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -146,8 +149,8 @@ const Home = () => {
           Helping educators act early to reduce dropout rates.
         </h2>
         <div className="space-x-3 sm:space-x-4 justify-center">
-          <DarkButton text="Demo" />
-          <LightButton text="Preview"/>
+          <DarkButton text="Demo" onClick={() => navigate('/demo')} />
+          <LightButton text="Get Started" onClick={() => navigate('/signup')}/>
         </div>
       </div>
 
