@@ -123,7 +123,7 @@ const Footer = () => {
                 How It Works
               </button>
               <span className="text-zinc-600">•</span>
-              <Link to="/dashboard" className="text-zinc-400 hover:text-zinc-200 transition-colors">
+              <Link to="/demo" className="text-zinc-400 hover:text-zinc-200 transition-colors">
                 View Demo
               </Link>
             </div>
