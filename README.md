@@ -84,8 +84,7 @@ Explore the system's functionality through our demo video, screenshots, and docu
 | ---------------------- | -------------------------------------------- |
 | 📹 **Demo Video** | [Watch on YouTube](https://youtu.be/your-video-link) |
 | 📊 **Presentation** | [Project Presentation (PPT)](docs/presentation.pptx) |
-| 📄 **Technical Docs** | [Technical Documentation](docs/technical-docs.pdf) |
-| 📘 **User Manual** | [User Manual](docs/user-manual.pdf)        |
+
 
 ### Key Highlights in Demo
 1. **Dashboard Overview**
@@ -208,47 +207,16 @@ The system expects the following data through Google Sheets:
 
 ## Future Features
 
-### Enhanced Prediction System
+- 📅 Automated scheduling for counseling sessions
+- 📨 Multi-channel notification system (SMS, Email, WhatsApp)
 - 🧠 Integration of multiple ML models for comparative analysis
 - 📊 Time-series analysis for trend prediction
 - 🎯 Personalized intervention strategies based on risk factors
 - 🔄 Auto-learning system that improves with more data
-
-### Advanced Analytics
-- 📈 Predictive analytics for resource allocation
-- 🎓 Course-wise success rate analysis
-- 📊 Advanced visualization tools for data interpretation
-- 🔍 Pattern recognition for early warning signs
-
-### Student Support Features
-- 💬 AI-powered chatbot for student queries
-- 📱 Mobile app for students to track their progress
-- 📅 Automated scheduling for counseling sessions
-- 📨 Multi-channel notification system (SMS, Email, WhatsApp)
-
-### Administrative Enhancements
-- 📋 Customizable intervention workflow system
-- 🤝 Integration with existing student management systems
-- 📑 Automated report generation for stakeholders
-- 🔐 Enhanced security features with 2FA
-
-### Community Features
-- 👥 Peer support system
-- 📚 Resource sharing platform
-- 👨‍🏫 Mentor-mentee matching system
-- 🤝 Alumni connection network
-
-### Data Integration
 - 📊 Integration with more data sources
 - 🔄 Real-time academic performance tracking
 - 📱 Social media sentiment analysis
 - 📈 Behavioral pattern analysis
-
-### Technical Improvements
-- ⚡ Performance optimization for large datasets
-- 🌐 Multi-language support
-- 🔄 Real-time synchronization across devices
-- 🎨 Customizable dashboard layouts
 
 ## Contributing
 
@@ -257,10 +225,6 @@ The system expects the following data through Google Sheets:
 3. Commit your changes
 4. Push to the branch
 5. Create a Pull Request
-
-## License
-
-[MIT License](LICENSE)
 
 ## Support
 
