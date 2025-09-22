@@ -61,12 +61,12 @@ Explore the system's functionality through our demo video, screenshots, and docu
 <br>
 <table>
   <tr>
-    <td><img src="src/assets/images/demo/overview.png" alt="Dashboard Overview"/></td>
-    <td><img src="src/assets/images/demo/alerts.png" alt="Student Alerts"/></td>
+    <td><img src="/frontend/src/assets/images/demo/overview.png" alt="Dashboard Overview"/></td>
+    <td><img src="/frontend/src/assets/images/demo/alerts.png" alt="Student Alerts"/></td>
   </tr>
   <tr>
-    <td><img src="src/assets/images/demo/details.png" alt="Student Details"/></td>
-    <td><img src="src/assets/images/demo/reports.png" alt="Reports Page"/></td>
+    <td><img src="frontend/src/assets/images/demo/details.png" alt="Student Details"/></td>
+    <td><img src="frontend/src/assets/images/demo/reports.png" alt="Reports Page"/></td>
   </tr>
 </table>
 </details>
