@@ -7,13 +7,6 @@ A comprehensive web application for predicting and managing student dropout risk
 </div>
 
 <p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/ogjash/Student-Drop-Prediction-SIH?style=for-the-badge&color=blue">
-  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/ogjash/Student-Drop-Prediction-SIH?style=for-the-badge&color=blueviolet">
-  <img alt="License" src="https://img.shields.io/github/license/ogjash/Student-Drop-Prediction-SIH?style=for-the-badge&color=green">
-  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/ogjash/Student-Drop-Prediction-SIH?style=for-the-badge&color=orange">
-</p>
-
-<p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#-demo--presentation">Demo</a> •
   <a href="#-getting-started">Getting Started</a> •
