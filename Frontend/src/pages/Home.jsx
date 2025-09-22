@@ -150,7 +150,7 @@ const Home = () => {
         </h2>
         <div className="space-x-3 sm:space-x-4 justify-center">
           <DarkButton text="Demo" onClick={() => navigate('/demo')} />
-          <LightButton text="Get Started" onClick={() => navigate('/signup')}/>
+          <LightButton text="Get Started" onClick={() => navigate('/auth/signup')}/>
         </div>
       </div>
 
