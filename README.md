@@ -60,7 +60,7 @@ Explore the system's functionality through our demo video, screenshots, and docu
 
 | Resource               | Link                                         |
 | ---------------------- | -------------------------------------------- |
-| 📹 **Demo Video** | [Watch on YouTube](https://youtu.be/your-video-link) |
+| 📹 **Demo Video** | [Watch on YouTube]([https://youtu.be/-1o0vFkMksA]) |
 | 📊 **Presentation** | [Project Presentation (PPT)](docs/presentation.pptx) |
 
 
