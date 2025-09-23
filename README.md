@@ -14,7 +14,7 @@ This README provides an overview of the project, including team details, relevan
 
 - **Anubhav Chaudhary** - 2023UIN3359 - [@anubhavchaudhary2003](https://github.com/anubhavchaudhary2003)
 - **Rahul Naithani** - 2023UIN3347 - [@Claynade](https://github.com/Claynade)
-- **Mayank Kumar** - 2023UIN3368 - [@Retarded23](https://github.com/Retarded23)
+- **Mayank Kumar** - 2023UIN3368 - [@Mayankkr2705](https://github.com/Mayankkr2705)
 - **Veer Rathi** - 2023UIC4012 - [@lordveer](https://github.com/lordveer)
 - **Vandana Kushwaha** - 2023UCM2820 - [@Vandanakk](https://github.com/Vandanakk)
 
