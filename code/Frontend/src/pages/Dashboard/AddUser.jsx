@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Users, Eye, EyeOff, X, Trash2 } from 'lucide-react';
-import { registerUser, removeUser, userList, sendfile } from '../../api/auth';
+import { Upload, Users, Eye, EyeOff, X, Trash2, Crown } from 'lucide-react';
+import { transferOwner,registerUser, removeUser, userList, sendfile } from '../../api/auth';
 import { LightButton, DarkButton } from '../../components/index';
 
 function generateRandomPassword(length = 12) {
@@ -105,6 +105,19 @@ const AddUser = () => {
       setUsers(prev => prev.filter(u => u._id !== userId));
     } catch (err) {
       alert(err?.response?.data?.message || 'Failed to remove user');
+    }
+  };
+
+  const handleTransferOwnership = async (userId, userEmail) => {
+    const confirmMessage = `Are you sure you want to transfer ownership to ${userEmail}?\n\nThis action cannot be undone and you will lose owner privileges.`;
+    if (!window.confirm(confirmMessage)) return;
+    
+    try {
+      await transferOwner({ newOwnerEmail: userEmail});
+      alert('Ownership transferred successfully!');
+      await fetchUsers(); // Refresh the user list
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to transfer ownership');
     }
   };
 
@@ -482,13 +495,22 @@ const AddUser = () => {
                       {user.role}
                     </span>
                     {user.role !== 'owner' && (
-                      <button
-                        onClick={() => handleRemoveUser(user._id)}
-                        className="ml-2 px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded transition-colors flex items-center"
-                        title="Remove user"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleTransferOwnership(user._id, user.email)}
+                          className="px-2 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded transition-colors flex items-center"
+                          title="Transfer ownership to this user"
+                        >
+                          <Crown className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleRemoveUser(user._id)}
+                          className="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded transition-colors flex items-center"
+                          title="Remove user"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
