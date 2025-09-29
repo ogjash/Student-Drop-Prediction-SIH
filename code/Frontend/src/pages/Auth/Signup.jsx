@@ -19,6 +19,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -30,10 +31,14 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault()
     setError('')
+    setIsLoading(true)
+    
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
+      setIsLoading(false)
       return
     }
+    
     try {
       await registerUniversity({
         username: formData.username,
@@ -48,6 +53,8 @@ const Signup = () => {
         err?.response?.data?.message ||
         'Signup failed. Please check your details.'
       )
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -174,9 +181,11 @@ const Signup = () => {
               </div>
 
               <DarkButton
-                text="Sign Up"
+                text={isLoading ? "Signing up..." : "Sign Up"}
                 className="w-full justify-center"
                 onClick={handleSignup}
+                loading={isLoading}
+                disabled={isLoading}
               />
             </form>
             
