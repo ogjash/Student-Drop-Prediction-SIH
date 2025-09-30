@@ -22,6 +22,9 @@ const AddUser = () => {
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [removingUserId, setRemovingUserId] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -74,6 +77,8 @@ const AddUser = () => {
       alert('Please fill in all required fields');
       return;
     }
+    
+    setSubmitLoading(true);
     try {
       await registerUser({
         username: formData.username,
@@ -87,9 +92,11 @@ const AddUser = () => {
       await fetchUsers();
       setFormData({ username: '', contactNumber: '', email: '', department: '', password: '' });
       setShowAddAdminForm(false);
-  alert(`Password sent to ${formData.email}`);
+      alert(`Password sent to ${formData.email}`);
     } catch (err) {
       alert(err?.response?.data?.message || 'Failed to add user');
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -100,6 +107,8 @@ const AddUser = () => {
 
   const handleRemoveUser = async (userId) => {
     if (!window.confirm('Are you sure you want to remove this user?')) return;
+    
+    setRemovingUserId(userId);
     try {
       await removeUser({ userId });
       setUsers(prev => prev.filter(u => u._id !== userId));
@@ -127,6 +136,7 @@ const AddUser = () => {
       return;
     }
 
+    setUploadLoading(true);
     try {
       await sendfile({
         attendanceLink,
@@ -137,6 +147,8 @@ const AddUser = () => {
       alert('Google Sheets links uploaded successfully!');
     } catch (err) {
       alert(err?.response?.data?.message || 'Failed to upload links');
+    } finally {
+      setUploadLoading(false);
     }
   };
 
@@ -151,12 +163,12 @@ const AddUser = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full overflow-x-hidden">
       {/* Upload Section */}
       <div className="mb-8">
-        <h2 className="text-lg font-medium text-gray-900 mb-6">
+        <h2 className="text-lg font-medium text-zinc-800 mb-6">
           Upload or Link Google Sheets for Attendance, Fees, and Marksheet
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 overflow-x-auto">
           {/* Attendance Google Sheet */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-zinc-200 p-6">
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-medium text-zinc-800 w-full text-start group relative cursor-help">
                 Attendance Google Sheet link
@@ -183,7 +195,7 @@ const AddUser = () => {
               value={attendanceLink}
               onChange={(e) => setAttendanceLink(e.target.value)}
               placeholder="Enter Google Sheets link"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
           {/* Fees Google Sheet */}
@@ -215,7 +227,7 @@ const AddUser = () => {
               value={feesLink}
               onChange={(e) => setFeesLink(e.target.value)}
               placeholder="Enter Google Sheets link"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
           {/* Marksheet Google Sheet */}
@@ -248,13 +260,13 @@ const AddUser = () => {
               value={marksheetLink}
               onChange={(e) => setMarksheetLink(e.target.value)}
               placeholder="Enter Google Sheets link"
-              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
           {/* Student Details Link Only */}
           <div className="bg-white rounded-lg border border-zinc-300 p-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-gray-700 w-full text-start group relative cursor-help">
+              <label className="text-sm font-medium text-zinc-700 w-full text-start group relative cursor-help">
                 StudentDetail Sheet link
                 <div className="hidden group-hover:block absolute z-10 w-55 p-2 bg-zinc-200 text-zinc-800 text-sm rounded-lg shadow-lg -translate-x-1/2 left-1/2 top-full mt-2">
                   <p className="font-semibold mb-2">Required Fields:</p>
@@ -284,7 +296,7 @@ const AddUser = () => {
               value={studentDetailsLink}
               onChange={(e) => setStudentDetailsLink(e.target.value)}
               placeholder="Enter Google Sheets link"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
           <div>
@@ -296,9 +308,11 @@ const AddUser = () => {
         {/* Upload Button below the links section */}
         <div className="flex justify-end mb-4 right-0">
           <LightButton
-            text="Upload"
+            text={uploadLoading ? "Uploading..." : "Upload"}
             className="justify-center"
             onClick={handleUploadLinks}
+            loading={uploadLoading}
+            disabled={uploadLoading}
           />
         </div>
         </div>
@@ -316,12 +330,12 @@ const AddUser = () => {
         <>
           <div className="fixed inset-0 bg-zinc-50 bg-opacity-30 backdrop-blur-sm z-40"></div>
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-x-auto">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-x-auto">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Add New Admin</h3>
+            <div className="bg-zinc-50 rounded-lg border border-zinc-300 w-full max-w-2xl overflow-x-auto">
+              <div className="flex items-center justify-between p-6 border-b border-zinc-200">
+                <h3 className="text-lg font-semibold text-zinc-800">Add New Admin</h3>
                 <button
                   onClick={handleCancel}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-zinc-400 hover:text-zinc-600 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -330,7 +344,7 @@ const AddUser = () => {
               <form onSubmit={handleSubmit} className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zinc-700 mb-2">
                        Username
                     </label>
                     <input
@@ -339,12 +353,12 @@ const AddUser = () => {
                       value={formData.username}
                       onChange={handleInputChange}
                       placeholder="Enter username"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zinc-700 mb-2">
                       Email
                     </label>
                     <input
@@ -353,12 +367,12 @@ const AddUser = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="Enter email address"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zinc-700 mb-2">
                       Contact Number
                     </label>
                     <input
@@ -367,19 +381,19 @@ const AddUser = () => {
                       value={formData.contactNumber}
                       onChange={handleInputChange}
                       placeholder="Enter contact number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-zinc-700 mb-2">
                       Department
                     </label>
                     <select
                       name="department"
                       value={formData.department}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Select Department</option>
                       <option value="Computer Science">Computer Science</option>
@@ -403,13 +417,13 @@ const AddUser = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Enter password"
-                        className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 pr-10 border border-zinc-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-gray-600"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -432,10 +446,13 @@ const AddUser = () => {
                     text="Cancel"
                     onClick={handleCancel}
                     className="justify-center"
+                    disabled={submitLoading}
                     />
                   <DarkButton
-                    text="Send Password"
+                    text={submitLoading ? "Sending..." : "Send Password"}
                     className="justify-center"
+                    loading={submitLoading}
+                    disabled={submitLoading}
                   />
                 </div>
               </form>
@@ -444,27 +461,27 @@ const AddUser = () => {
         </>
       )}
       {/* Created Users Section */}
-      <div className="bg-white rounded-lg border border-gray-200 mt-8 overflow-x-auto">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className="bg-white rounded-lg border border-zinc-200 mt-8 overflow-x-auto">
+        <div className="px-6 py-4 border-b border-zinc-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900">Created Users</h3>
-            <span className="text-sm text-gray-500">
+            <h3 className="text-lg font-medium text-zinc-900">Created Users</h3>
+            <span className="text-sm text-zinc-500">
               {users.length} user{users.length !== 1 ? 's' : ''}
             </span>
           </div>
         </div>
         <div className="px-6 py-4">
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading...</div>
+            <div className="text-center py-8 text-zinc-500">Loading...</div>
           ) : users.length === 0 ? (
             <div className="text-center py-8">
-              <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">No users yet.</p>
+              <Users className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+              <p className="text-zinc-500 text-sm">No users yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {users.map((user) => (
-                <div key={user._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div key={user._id} className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg">
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
@@ -476,13 +493,13 @@ const AddUser = () => {
                         <div className="flex items-center space-x-6">
                           <div>
                             <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                            <p className="text-sm text-gray-500">{user.contactNumber}</p>
-                            <p className="text-sm text-gray-500">{user.username}</p>
+                            <p className="text-sm text-zinc-500">{user.contactNumber}</p>
+                            <p className="text-sm text-zinc-500">{user.username}</p>
                           </div>
                           <div>
                             {/* Optionally display department if available */}
                             {/* <p className="text-sm text-gray-600">{user.department}</p> */}
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-zinc-400">
                               Added {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''}
                             </p>
                           </div>

@@ -14,6 +14,7 @@ const Login = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -25,6 +26,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault()
     setError('')
+    setIsLoading(true)
+    
     try {
       await loginApi(formData)
       navigate('/dashboard')
@@ -33,6 +36,8 @@ const Login = () => {
         err?.response?.data?.message ||
         'Login failed. Please check your credentials.'
       )
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -90,9 +95,11 @@ const Login = () => {
               </div>
 
               <DarkButton
-                text="Login"
+                text={isLoading ? "Logging in..." : "Login"}
                 className="w-full justify-center"
                 onClick={handleLogin}
+                loading={isLoading}
+                disabled={isLoading}
               />
             </form>
             
