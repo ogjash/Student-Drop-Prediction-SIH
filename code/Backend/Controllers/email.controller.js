@@ -6,7 +6,7 @@ export const email=async(req,res)=>{
     if (!to || !subject || !html) {
       return res.status(400).json({ error: "Invalid payload" });
     }
-    const result = await sendEmail({ to, subject, text, html });
+    const result = await sendEmail({ to, subject, html });
     res.json(result);
   } catch (e) {
     res.status(500).json({ error: "Email failed", detail: String(e) });
