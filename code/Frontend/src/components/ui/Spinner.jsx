@@ -11,7 +11,7 @@ const Spinner = ({ size = "md", className = "", color = "white" }) => {
 
   const colorClasses = {
     white: "border-white/20 border-t-white",
-    dark: "border-gray-400/20 border-t-gray-600",
+    dark: "border-zinc-400/20 border-t-zinc-600",
     primary: "border-blue-300/20 border-t-blue-600",
   };
 
