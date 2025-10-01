@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Clock, CheckCircle, Send, Eye, RefreshCw, Filter, Bell, Calendar, User } from 'lucide-react';
-
+import { useOutletContext } from 'react-router-dom';
+import { AlertTriangle, Clock, CheckCircle, Send, Eye, RefreshCw, Filter, Calendar, User } from 'lucide-react';
 import { AlertsSkeleton } from '../../components/ui/Skeleton';
-import { predictDropout,refreshPrediction } from '../../api/auth';
+import { refreshPrediction,sendemail } from '../../api/auth';
+import {getAndStorePrediction} from '../../data/mockData';
 
 const Alerts = () => {
+  const { userInfo, loading: userLoading } = useOutletContext();
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [students, setStudents] = useState([]);
-  const [dropoutRates, setDropoutRates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [severityFilter, setSeverityFilter] = useState('all');
+  const [sendingEmail, setSendingEmail] = useState({});
 
   useEffect(() => {
     fetchBackendData();
@@ -18,42 +20,34 @@ const Alerts = () => {
   const fetchBackendData = async () => {
     try {
       setLoading(true);
-      const response = await predictDropout();
-      const data = response.data;
-      
-      setStudents(data.mergedData || []);
-      setDropoutRates(data.dropoutRate || []);
+      const data = await getAndStorePrediction();
+      setStudents(data.students || []);
     } catch (error) {
       console.error('Failed to fetch backend data:', error);
       setStudents([]);
-      setDropoutRates([]);
     } finally {
       setLoading(false);
     }
-  };
-
-
-  
-  const getStudentSeverity = (student, dropoutRate) => {
+  };  
+  const getStudentSeverity = (student) => {
     if (!student) return 'low';
     
-    // Follow RiskTable logic: High risk if dropoutRate > 70, Medium if 40-70, Low if <= 40
+    const dropoutRate = student.dropoutRate;
+    
     if (typeof dropoutRate === 'number') {
       if (dropoutRate > 70) return 'high';
       if (dropoutRate > 40) return 'medium';
       return 'low';
     }
     
-    // Fallback logic based on other factors if no dropout rate
-    if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 70) return 'high';
-    if (typeof student.test_score_1 === 'number' && typeof student.test_score_2 === 'number' && typeof student.test_score_3 === 'number') {
-      const avgScore = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
-      if (avgScore < 60) return 'high';
-      if (avgScore < 70) return 'medium';
-    }
-    if (student.Pending_Fees === 1) return 'medium';
-    if (typeof student.attendance_percentage === 'number' && student.attendance_percentage < 80) return 'medium';
+    // Fallback logic based on other metrics
+    const attendance = student.attendance_percentage || 0;
+    const avgScore = student.test_score_1 && student.test_score_2 && student.test_score_3 
+      ? (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3 
+      : 0;
     
+    if (attendance < 70 || avgScore < 60) return 'high';
+    if (attendance < 80 || avgScore < 70 || student.Pending_Fees === 1) return 'medium';
     return 'low';
   };
   const getSeverityColor = (severity) => {
@@ -81,7 +75,6 @@ const Alerts = () => {
         return <CheckCircle className="h-5 w-5 text-gray-500" />;
     }
   };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -91,79 +84,220 @@ const Alerts = () => {
       minute: '2-digit',
     });
   };
-
-  const handleSendNotification = (alertId) => {
-    const alert = generatedAlerts.find(a => a.id === alertId);
-    if (alert) {
-      alert('Notification sent to mentor and guardian for ' + alert.studentName + '!');
-    } else {
-      alert('Notification sent to mentor and guardian!');
-    }
-  };
-
-  const handleNotifyAll = () => {
-    const highRiskAlerts = filteredAlerts.filter(a => a.severity === 'high' && !a.resolved);
-    const mediumRiskAlerts = filteredAlerts.filter(a => a.severity === 'medium' && !a.resolved);
-    
-    if (highRiskAlerts.length > 0) {
-      alert(`Bulk notification sent to mentors and guardians for ${highRiskAlerts.length} high-risk students!`);
-    } else if (mediumRiskAlerts.length > 0) {
-      alert(`Bulk notification sent to mentors and guardians for ${mediumRiskAlerts.length} medium-risk students!`);
-    } else {
-      alert('No students found to notify.');
-    }
-  };
-
   const handleRefreshAlerts = async () => {
-      setLoading(true);
-      try {
-        const refreshResponse = await refreshPrediction();
-        if (refreshResponse.data) {
-          setStudents(refreshResponse.data.mergedData || []);
-          setDropoutRates(refreshResponse.data.dropoutRate || []);
-          return; 
-        }
-        await fetchBackendData(); // Only fetch if refresh didn't return data
-      } catch (error) {
-        console.error('Failed to refresh prediction:', error);
-        const errorMessage = error.response?.data?.message || 'Failed to refresh predictions';
-        console.log(errorMessage);
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    try {
+      const refreshResponse = await refreshPrediction();
+      if (refreshResponse.data) {
+        setStudents(refreshResponse.data.students || refreshResponse.data.studentsWithRisk || refreshResponse.data.mergedData || []);
+        return;
       }
+      await fetchBackendData(); // Only fetch if refresh didn't return data
+    } catch (error) {
+      console.error('Failed to refresh prediction:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to refresh predictions';
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleSendNotification = async (alertId) => {
+    const alert = generatedAlerts.find(a => a.id === alertId);
+    if (!alert) return;
+    
+    const student = students.find(s => String(s.student_id || s.id) === String(alert.studentId));
+    if (!student) return;
+
+    setSendingEmail(prev => ({ ...prev, [alertId]: true }));
+    
+    try {
+      const { message } = getAlertDetails(student, alert.severity);
+      const avgScore = student.test_score_1 && student.test_score_2 && student.test_score_3
+            ? ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)
+            : 'N/A';
+      const emailData = {
+        to: student.email,
+        subject: `Urgent: Attendance and Performance Alert for ${alert.studentName}`,
+        html: `
+          <p>Dear Guardian,</p>
+          <p>We are reaching out to inform you about the current academic status of your ward:</p>
+          
+          <h4>Student Details</h4>
+          <p><strong>Name:</strong> ${alert.studentName}</p>
+          <p><strong>Student ID:</strong> ${alert.studentId}</p>
+          <p><strong>Class:</strong> ${alert.class}</p>
+          
+          <h4>Current Situation</h4>
+          <p><strong>Risk Level:</strong> ${alert.severity}</p>
+          <p><strong>Dropout Probability:</strong> ${typeof alert.dropoutRate === 'number' ? alert.dropoutRate.toFixed(1) : 'N/A'}%</p>
+          <p><strong>Attendance:</strong> ${student.attendance_percentage}% (below the required threshold)</p>
+          <p><strong>Average Score:</strong> ${avgScore}</p>
+          
+          <h4>Concern</h4>
+          <p>${message}</p>
+          
+          <h4>Recommended Action</h4>
+          <p>We kindly request your cooperation in:</p>
+          <ul>
+            <li>Discussing the importance of regular class attendance with your ward.</li>
+            <li>Encouraging a structured study routine at home.</li>
+            <li>Staying in close contact with the class mentor or counselor for continuous support.</li>
+          </ul>
+          <p>Your involvement at this stage can make a significant difference in helping them improve attendance, engagement, and overall academic performance.</p>
+          <p>Please feel free to reach out to us at [Mentor/Faculty Contact Email] or [Phone Number] for further discussion and to work together on a recovery plan.</p>
+          
+          <p>Sincerely,<br/>
+          ${userInfo?.name || '[Faculty/Mentor Name]'}<br/>
+          ${userInfo?.university?.name || '[Institute Name]'}</p>
+        `
+      };
+      
+      await sendemail(emailData);
+      console.log(`Notification sent successfully to mentors and guardians for ${alert.studentName}!`);
+      
+    } catch (error) {
+      console.error('Failed to send notification:', error);
+      const errorMsg = error.response?.data?.message || 'Failed to send notification. Please try again.';
+      console.error(errorMsg);
+    } finally {
+      setSendingEmail(prev => ({ ...prev, [alertId]: false }));
+    }
+  };
+
+  const handleNotifyAll = async () => {
+    const alertsToSend = filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved);
+    
+    if (alertsToSend.length === 0) {
+      console.log('No students found to notify.');
+      return;
+    }
+
+    setSendingEmail(prev => ({ ...prev, 'bulk': true }));
+    
+    try {
+      const emailPromises = alertsToSend.map(async (alertItem) => {
+        const student = students.find(s => String(s.student_id || s.id) === String(alertItem.studentId));
+        if (!student) return null;
+        
+        const { message } = getAlertDetails(student, alertItem.severity);
+        const avgScore = student.test_score_1 && student.test_score_2 && student.test_score_3
+            ? ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)
+            : 'N/A';
+        const emailData = {
+          to: student.email,
+          subject: `Urgent: Attendance and Performance Alert for ${alertItem.studentName}`,
+          html: `
+            <p>Dear Guardian,</p>
+            <p>We are reaching out to inform you about the current academic status of your ward:</p>
+            
+            <h4>Student Details</h4>
+            <p><strong>Name:</strong> ${alertItem.studentName}</p>
+            <p><strong>Student ID:</strong> ${alertItem.studentId}</p>
+            <p><strong>Class:</strong> ${alertItem.class}</p>
+            
+            <h4>Current Situation</h4>
+            <p><strong>Risk Level:</strong> ${alertItem.severity}</p>
+            <p><strong>Dropout Probability:</strong> ${typeof alertItem.dropoutRate === 'number' ? alertItem.dropoutRate.toFixed(1) : 'N/A'}%</p>
+            <p><strong>Attendance:</strong> ${student.attendance_percentage}% (below the required threshold)</p>
+            <p><strong>Average Score:</strong> ${avgScore}</p>
+            
+            <h4>Concern</h4>
+            <p>${message}</p>
+            
+            <h4>Recommended Action</h4>
+            <p>We kindly request your cooperation in:</p>
+            <ul>
+              <li>Discussing the importance of regular class attendance with your ward.</li>
+              <li>Encouraging a structured study routine at home.</li>
+              <li>Staying in close contact with the class mentor or counselor for continuous support.</li>
+            </ul>
+            <p>Your involvement at this stage can make a significant difference in helping them improve attendance, engagement, and overall academic performance.</p>
+            <p>Please feel free to reach out to us at [Mentor/Faculty Contact Email] or [Phone Number] for further discussion and to work together on a recovery plan.</p>
+            
+            <p>Sincerely,<br/>
+            ${userInfo?.name || '[Faculty/Mentor Name]'}<br/>
+            ${userInfo?.university?.name || '[Institute Name]'}</p>
+          `
+        }; 
+        
+        return sendemail(emailData);
+      });
+      
+      await Promise.all(emailPromises.filter(Boolean));
+      console.log(`Bulk notification sent successfully to mentors and guardians for ${alertsToSend.length} students!`);
+      
+    } catch (error) {
+      console.error('Failed to send bulk notifications:', error);
+      const errorMsg = error.response?.data?.message || 'Failed to send some notifications. Please try again.';
+      console.error(errorMsg);
+    } finally {
+      setSendingEmail(prev => ({ ...prev, 'bulk': false }));
+    }
+  };
+
+  
+
+  // Helper function to get alert details based on student data
+  const getAlertDetails = (student, severity) => {
+    const attendance = student.attendance_percentage || 0;
+    const avgScore = student.test_score_1 && student.test_score_2 && student.test_score_3
+      ? (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3
+      : 0;
+    
+    if (severity === 'high') {
+      if (attendance < 70) {
+        return {
+          type: 'attendance',
+          message: `Attendance below critical threshold (${attendance}%) - Immediate intervention required`
+        };
+      } else if (avgScore < 60) {
+        return {
+          type: 'performance',
+          message: `Test scores consistently declining - Current average: ${avgScore.toFixed(1)}%`
+        };
+      } else {
+        return {
+          type: 'risk',
+          message: 'High dropout risk detected - Requires immediate attention and intervention'
+        };
+      }
+    } else if (severity === 'medium') {
+      if (attendance < 80) {
+        return {
+          type: 'attendance',
+          message: `Attendance approaching threshold (${attendance}%) - Monitor closely`
+        };
+      } else if (avgScore < 70) {
+        return {
+          type: 'performance',
+          message: 'Test scores below department average - Counseling recommended'
+        };
+      } else if (student.Pending_Fees === 1) {
+        return {
+          type: 'fees',
+          message: 'Fee payment pending - Grace period active'
+        };
+      } else {
+        return {
+          type: 'risk',
+          message: 'Medium dropout risk - Requires monitoring and support'
+        };
+      }
+    } else {
+      return {
+        type: 'performance',
+        message: 'Good standing'
+      };
+    }
   };
 
   const generatedAlerts = students.map((student, idx) => {
-    const dropoutRate = Array.isArray(dropoutRates) && dropoutRates.length > idx ? dropoutRates[idx] : student.dropoutRate;
-    const severity = getStudentSeverity(student, dropoutRate);
-    let type = '';
-    let message = '';
-    if (severity === 'high') {
-      if (student.attendance_percentage < 70) {
-        type = 'attendance';
-        message = `Attendance below critical threshold (${student.attendance_percentage}%) - Immediate intervention required`;
-      } else if (((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) < 60) {
-        type = 'performance';
-        message = `Test scores consistently declining - Current average: ${((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(2)}%`;
-      } else if (student.Pending_Fees === 1) {
-        type = 'fees';
-        message = 'Fee payment pending for current semester';
-      }
-    } else if (severity === 'medium') {
-      if (student.attendance_percentage < 80) {
-        type = 'attendance';
-        message = `Attendance approaching threshold (${student.attendance_percentage}%) - Monitor closely`;
-      } else if (((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) < 70) {
-        type = 'performance';
-        message = `Test scores below department average - Counseling recommended`;
-      } else if (student.Pending_Fees === 1) {
-        type = 'fees';
-        message = 'Fee payment pending - Grace period active';
-      }
-    } else {
-      type = 'performance';
-      message = 'Good standing';
-    }
+    const dropoutRate = student.dropoutRate;
+    const severity = getStudentSeverity(student);
+    const { type, message } = getAlertDetails(student, severity);
+    
     return {
       id: idx + 1,
       studentId: student.student_id || student.id,
@@ -225,11 +359,20 @@ const Alerts = () => {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleNotifyAll}
-              disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0}
+              disabled={filteredAlerts.filter(a => (a.severity === 'high' || a.severity === 'medium') && !a.resolved).length === 0 || sendingEmail.bulk}
               className="inline-flex items-center justify-center px-3 sm:px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              <AlertTriangle className="h-5 w-5 mr-2" />
-              <span>Notify All</span>
+              {sendingEmail.bulk ? (
+                <>
+                  <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
+                  <span>Sending...</span>
+                </>
+              ) : (
+                <>
+                  <AlertTriangle className="h-5 w-5 mr-2" />
+                  <span>Notify All</span>
+                </>
+              )}
             </button>
             <div className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-blue-50 text-blue-700 text-xs sm:text-sm font-medium">
               <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -384,7 +527,10 @@ const Alerts = () => {
                             </span>
                             <span className="text-gray-500">
                               Avg Score: <span className="font-medium">
-                                {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
+                                {student.test_score_1 && student.test_score_2 && student.test_score_3
+                                  ? ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1) + '%'
+                                  : 'N/A'
+                                }
                               </span>
                             </span>
                           </>
@@ -396,11 +542,22 @@ const Alerts = () => {
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:ml-6">
                       <button
                         onClick={() => handleSendNotification(alert.id)}
-                        className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                        disabled={sendingEmail[alert.id]}
+                        className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >
-                        <Send className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">Notify</span>
-                        <span className="sm:hidden">Notify</span>
+                        {sendingEmail[alert.id] ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            <span className="hidden sm:inline">Sending...</span>
+                            <span className="sm:hidden">Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4 mr-2" />
+                            <span className="hidden sm:inline">Notify</span>
+                            <span className="sm:hidden">Notify</span>
+                          </>
+                        )}
                       </button>
                       <button
                         onClick={() => setSelectedAlert(selectedAlert === alert.id ? null : alert.id)}
@@ -473,10 +630,17 @@ const Alerts = () => {
                               <div className="flex justify-between">
                                 <span className="text-gray-600">Average Score:</span>
                                 <span className={`font-medium text-right ${
-                                  ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 80 ? 'text-emerald-600' : 
-                                  ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3) >= 60 ? 'text-amber-600' : 'text-red-600'
+                                  student.test_score_1 && student.test_score_2 && student.test_score_3
+                                    ? (() => {
+                                        const avg = (student.test_score_1 + student.test_score_2 + student.test_score_3) / 3;
+                                        return avg >= 80 ? 'text-emerald-600' : avg >= 60 ? 'text-amber-600' : 'text-red-600';
+                                      })()
+                                    : 'text-gray-500'
                                 }`}>
-                                  {((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1)}%
+                                  {student.test_score_1 && student.test_score_2 && student.test_score_3
+                                    ? ((student.test_score_1 + student.test_score_2 + student.test_score_3) / 3).toFixed(1) + '%'
+                                    : 'N/A'
+                                  }
                                 </span>
                               </div>
                               <div className="flex justify-between">

@@ -203,7 +203,7 @@ const DashboardLayout = () => {
           "ml-0 md:ml-[300px]"
         )
       )}>
-        <DashboardContent animate={animate} />
+        <DashboardContent animate={animate} userInfo={userInfo} loading={loading} />
       </div>
     </div>
   )
@@ -267,7 +267,7 @@ const LogoIcon = () => {
   );
 };
 
-const DashboardContent = ({ animate }) => {
+const DashboardContent = ({ animate, userInfo, loading }) => {
   return (
     <motion.div 
       className="flex flex-1 min-h-screen flex-col"
@@ -285,7 +285,7 @@ const DashboardContent = ({ animate }) => {
         className="enhanced-scrollbar flex w-full flex-1 flex-col gap-2 rounded-tl-lg lg:rounded-tl-2xl border border-zinc-300 bg-zinc-50 p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 dark:border-zinc-600 dark:bg-zinc-900 overflow-hidden"
       >
         <div className="w-full max-w-full overflow-x-auto">
-          <Outlet />
+          <Outlet context={{ userInfo, loading }} />
         </div>
       </div>
     </motion.div>
