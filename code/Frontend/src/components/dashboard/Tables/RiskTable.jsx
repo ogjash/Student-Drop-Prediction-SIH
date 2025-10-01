@@ -20,7 +20,7 @@ const getScoreStatus = (score) => {
   if (score >= 60) return { color: 'text-amber-600', icon: Minus };
   return { color: 'text-red-600', icon: TrendingDown };
 };
-const RiskTable = ({ students, onViewStudent, dropoutRates }) => {
+const RiskTable = ({ students, onViewStudent}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 10;
   
@@ -130,14 +130,8 @@ const getRiskColor = (level) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
             {currentStudents.map((student, idx) => {
-              // Calculate the original index for dropoutRates
-              const originalIdx = startIndex + idx;
-              // Get dropoutRate from dropoutRates prop if available, else fallback to student.dropoutRate
-              const dropoutRate =
-                Array.isArray(dropoutRates) && dropoutRates.length > originalIdx
-                  ? dropoutRates[originalIdx]
-                  : student.dropoutRate;
-              
+
+              const dropoutRate = student.dropoutRate;
               const avgScore = parseFloat(getAvgTestScore(student));
               const attendanceStatus = getAttendanceStatus(student.attendance_percentage);
               const scoreStatus = getScoreStatus(avgScore);
